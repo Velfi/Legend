@@ -1,72 +1,41 @@
-var Player = require('/home/zelda/Documents/phaser_game/src/player.js');
+var Player = require('/home/zelda/Documents/legend/src/player.js');
+var Zombie = require('/home/zelda/Documents/legend/src/enemies/zombie.js');
 
 function Game() {}
 
 Game.prototype.create = function() {
-  player = new Player(200, 200);
+  // game.physics.startSystem(Phaser.Physics.ARCADE);
+  game.stage.backgroundColor = 0x224466;
+  game.stage.smoothed = false;
+  map = game.add.tilemap('map');
+  map.addTilesetImage('simple');
+  map.setCollisionBetween(1, 16, true, 'center_stage');
+  center_stage = map.createLayer('center_stage');
+  back_stage = map.createLayer('back_stage');
+  player = new Player(64, 600);
   player.create();
-  map = game.add.tilemap('map', 64, 64);
-  map.addTilesetImage('tiles');
-  layer = map.createLayer(0);
-  game.physics.arcade.enable(layer);
-  layer.setCollision(0);
-  layer.resizeWorld();
-  this.game.stage.backgroundColor = 0x4488cc;
+  enemy = new Zombie(600, 600);
+  enemy.create();
+  front_stage = map.createLayer('front_stage');
+  center_stage.resizeWorld();
+  game.camera.follow(player.sprite, Phaser.Camera.FOLLOW_PLATFORMER);
 };
 
 Game.prototype.update = function() {
+  game.physics.arcade.collide(player.sprite, center_stage);
+  game.physics.arcade.collide(enemy.sprite, center_stage);
+  // game.physics.arcade.collide(enemy.sprite, player.sprite);
   player.update();
+  enemy.update();
 }
-
 
 Game.prototype.onInputDown = function() {};
 
-module.exports = Game;
+Game.prototype.render = function() {
+  game.debug.body(player.sprite);
+  game.debug.body(enemy.sprite);
 
-// Level.prototype = {
-// initLevel: function(tilemapKey, tilesetImage, tilesetImageKey) {
-//   level = this;
-//
-//   game.physics.arcade.setBoundsToWorld();
-//
-//   this.map = game.add.tilemap(tilemapKey);
-//   this.map.addTilesetImage(tilesetImage, tilesetImageKey);
-// },
-// restart: function() {
-//   this.resetCamera();
-//   this.enemyGroup.forEach(function(enemy) {
-//     enemy.kill();
-//     if ('killProjectiles' in enemy.parentEntity) {
-//       enemy.parentEntity.killProjectiles();
-//     }
-//   }, this);
-//   this.enemyGroup.destroy();
-//   if ('tearDownLevelComponents' in this) {
-//     this.tearDownLevelComponents();
-//   }
-//   if ('buildLevelComponents' in this) {
-//     this.buildLevelComponents();
-//   }
-//   this.enemyGroup = game.add.group();
-//   this.createEnemies();
-//   player.create();
-// },
-// render: function() {
-//   if (window.debugging == true) {
-//     game.debug.body(player.sprite);
-//     this.enemyGroup.forEach(function(enemy) {
-//       game.debug.body(enemy);
-//       if (enemy.parentEntity.projectiles) {
-//         enemy.parentEntity.projectiles.forEach(function(projectile) {
-//           game.debug.body(projectile);
-//         }, this);
-//       }
-//     }, this);
-//   }
-// },
-// resetCamera: function() {
-//   game.camera.x = this.startingCameraPosX;
-//   game.camera.y = this.startingCameraPosY;
-// },
-// };
-// $.extend(Level.prototype, FadableState.prototype);
+  game.debug.bodyInfo(player.sprite, 250, 50);
+}
+
+module.exports = Game;

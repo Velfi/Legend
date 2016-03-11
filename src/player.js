@@ -5,16 +5,14 @@ function Player(xSpawnPos, ySpawnPos) {
 
 Player.prototype = {
   create: function() {
-    this.facing = 'right';
     this.sprite = game.add.sprite(this.xSpawnPos, this.ySpawnPos, 'richter');
     this.sprite.scale.set(2);
-    this.smoothed = false;
-    // game.camera.follow(player.sprite);
-
     this.initializePlayerPhysics();
     this.initializePlayerAnimations();
     this.initializePlayerControls();
     // this.initializePlayerAudio();
+    this.sprite.body.setSize(14, 42, 16, 5); // make bounding box more forgiving
+
     // this.sprite.body.setSize(PLAYER_WIDTH, PLAYER_HEIGHT, PLAYER_X_OFFSET, PLAYER_Y_OFFSET);
   },
   initializePlayerPhysics: function() {
@@ -24,7 +22,7 @@ Player.prototype = {
     this.playerJumpSpeed = -600;
     this.playerMaxSpeed = 300; // pixels/second
 
-    game.physics.arcade.enable(this.sprite);
+    game.physics.enable(this.sprite);
     this.sprite.body.bounce.y = 0.1;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.drag.setTo(this.playerDrag, 0);
@@ -36,8 +34,9 @@ Player.prototype = {
     buttonDuck = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     buttonMoveLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     buttonMoveRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    buttonAttack = game.input.keyboard.addKey(Phaser.Keyboard.Z)
     // this.cursors = game.input.keyboard.createCursorKeys();
-    // this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   },
   initializePlayerAnimations: function() {
     this.sprite.animations.add('left', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
@@ -45,6 +44,9 @@ Player.prototype = {
     this.sprite.animations.add('jump', [19, 20, 21, 22], 10, true);
   },
   update: function() {
+    if (jumpButton.isdown){
+      console.log("boop");
+    }
     this.updateMovement();
   },
   updateMovement: function() {
