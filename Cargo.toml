@@ -1,0 +1,11 @@
+[package]
+name = "legend"
+version = "0.1.0"
+authors = ["Zelda Hessler <zelda.hessler@gmail.com>"]
+
+[features]
+cargo-resource-root = []
+
+[dependencies]
+ggez = "0.4.2"
+rand = "0.4.2"
