@@ -4,6 +4,7 @@ pub mod field_state;
 pub mod main_state;
 
 use super::ggez::{self, event, Context, GameResult};
+use super::shrev;
 use std::mem;
 
 pub trait State {
@@ -33,7 +34,6 @@ pub struct StateMachine<'a> {
 }
 
 impl<'a> StateMachine<'a> {
-
     pub fn new<S: State + 'a>(initial_state: S) -> StateMachine<'a> {
         StateMachine {
             running: false,

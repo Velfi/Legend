@@ -34,17 +34,17 @@ impl State for MainState {
                 keycode: Some(event::Keycode::Escape),
                 ..
             } => {
-                println!("Quitting");
+                debug!("Quitting");
                 self.quit = true;
             }
             | event::Event::KeyDown {
                 keycode: Some(event::Keycode::B),
                 ..
             } => {
-                println!("Battle Starting");
+                debug!("Battle Starting");
                 self.debug_battle = true;
             }
-            input => println!("Event fired: {:?}", input),
+            input => trace!("Event fired: {:?}", input),
         }
     }
 
@@ -52,7 +52,8 @@ impl State for MainState {
         if self.quit {
             Ok(StateTransition::Quit)
         } else if self.debug_battle {
-            let battle = super::battle_state::BattleState::new(ctx).expect("Failed to create Battle State.");
+            let battle =
+                super::battle_state::BattleState::new(ctx).expect("Failed to create Battle State.");
 
             Ok(StateTransition::Push(Box::new(battle)))
         } else {
@@ -70,12 +71,7 @@ impl State for MainState {
             100.0,
             2.0,
         )?;
-        graphics::draw(
-            ctx,
-            &self.state_label,
-            Point2::new(600.0, 0.0),
-            0.0
-        )?;
+        graphics::draw(ctx, &self.state_label, Point2::new(600.0, 0.0), 0.0)?;
         graphics::present(ctx);
         Ok(())
     }

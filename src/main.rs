@@ -1,38 +1,27 @@
-// use std::sync::mpsc;
-// use std::thread;
-// use std::time::Duration;
-
-// fn main() {
-//     let (tx, rx) = mpsc::channel();
-
-//     thread::spawn(move || {
-//         let vals = vec![
-//             String::from("hi"),
-//             String::from("from"),
-//             String::from("the"),
-//             String::from("thread"),
-//         ];
-
-//         for val in vals {
-//             tx.send(val).unwrap();
-//             thread::sleep(Duration::from_secs(1));
-//         }
-//     });
-
-//     for received in rx {
-//         println!("Got: {}", received);
-//     }
-// }
-
 extern crate ggez;
 use ggez::conf;
 use ggez::event;
 use ggez::Context;
 
+extern crate shrev;
+
+#[macro_use]
+extern crate log;
+use log::LevelFilter;
+extern crate fern;
+use fern::colors::{Color, ColoredLevelConfig};
+
 mod state;
 use state::{main_state::MainState, StateMachine};
 
 pub fn main() {
+    if let Err(e) = setup_logger() {
+        println!("The logger failed to start with error: {}", e);
+        println!("This may cause some log messages to be swallowed =(");
+    } else {
+        debug!("The logger has started successfully.")
+    }
+
     let c = conf::Conf::new();
     let ctx = &mut Context::load_from_conf("legend", "ggez", c).unwrap();
 
@@ -40,9 +29,9 @@ pub fn main() {
         let mut path = std::path::PathBuf::from(manifest_dir);
         path.push("resources");
         ctx.filesystem.mount(&path, true);
-        println!("Adding path {:?}", path);
+        trace!("Adding path {:?}", path);
     } else {
-        println!("not building with cargo?");
+        warn!("not building with cargo?");
     }
 
     let state = MainState::new(ctx).unwrap();
@@ -50,4 +39,27 @@ pub fn main() {
 
     let state_machine = StateMachine::new(state);
     state_machine.start(ctx, &mut events);
+}
+
+fn setup_logger() -> Result<(), fern::InitError> {
+    let colors = ColoredLevelConfig::new()
+        .debug(Color::Green)
+        .error(Color::BrightRed)
+        .info(Color::Blue)
+        .trace(Color::BrightMagenta)
+        .warn(Color::Yellow);
+    fern::Dispatch::new()
+        .format(move |out, message, record| {
+            out.finish(format_args!(
+                "[{}] {} -> {}",
+                colors.color(record.level()),
+                record.target(),
+                message
+            ))
+        })
+        .level_for("gfx_device_gl", LevelFilter::Error)
+        .level(log::LevelFilter::Debug)
+        .chain(std::io::stdout())
+        .apply()?;
+    Ok(())
 }
