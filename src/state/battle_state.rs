@@ -1,6 +1,6 @@
 
 use super::{ggez::{event,
-                   graphics::{self, DrawMode, Point2},
+                   graphics::{self, Point2},
                    Context,
                    GameResult},
             State,
@@ -10,7 +10,10 @@ use std::sync::mpsc;
 use std::fmt;
 use std::default::Default;
 
-const MAX_PARRY_CHARGES: usize = 2;
+use super::ui::{
+    Ui,
+    Button
+};
 
 /// The main state for now. Will maybe become a menu later.
 pub struct BattleState {
@@ -21,6 +24,7 @@ pub struct BattleState {
     player_events_rx: mpsc::Receiver<Action>,
     state_label: graphics::Text,
     font: graphics::Font,
+    ui: Ui
 }
 
 impl BattleState {
@@ -36,7 +40,28 @@ impl BattleState {
             vec!(enemy),
         );
 
+        let font_sm = graphics::Font::new(ctx, "/font.ttf", 12)?;
+        let font_md = graphics::Font::new(ctx, "/font.ttf", 24)?;
+        let font_lg = graphics::Font::new(ctx, "/font.ttf", 48)?;
         let font = graphics::Font::new(ctx, "/font.ttf", 48)?;
+
+        let mut battle_ui = Ui::default();
+        battle_ui.add_font("small".to_string(), font_sm);
+        battle_ui.add_font("medium".to_string(), font_md);
+        battle_ui.add_font("large".to_string(), font_lg);
+
+        let button = Button {
+            position: graphics::Point2::new(200.0, 200.0),
+            height: 50,
+            width: 50,
+            is_hovered: false,
+            id: 12,
+            label: graphics::Text::new(ctx, "Test Button", &font).unwrap(),
+            bg_color: graphics::Color::from_rgb(0, 50, 200),
+            hover_bg_color: graphics::Color::from_rgb(200, 50, 0),
+        };
+
+        battle_ui.add_element(Box::new(button));
 
         let s = BattleState {
             quit: false,
@@ -46,6 +71,7 @@ impl BattleState {
             player_events_rx: rx,
             state_label: graphics::Text::new(ctx, "Battle State", &font)?,
             font,
+            ui: battle_ui,
         };
         Ok(s)
     }
@@ -106,6 +132,7 @@ impl State for BattleState {
             Point2::new(600.0, 10.0),
             0.0
         )?;
+        self.ui.draw(ctx);
         graphics::present(ctx);
         Ok(())
     }
