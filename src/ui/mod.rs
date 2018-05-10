@@ -1,14 +1,13 @@
-use super::ggez::{
-    Context,
-    GameResult,
-    graphics
-};
+use super::ggez::{graphics::{self, DrawMode, Mesh, Point2, Rect, Text},
+                  Context,
+                  GameResult,
+                  event};
 
 use super::shrev::EventChannel;
 
-use std::default::Default;
-use std::collections::HashMap;
 use std::collections::hash_map::Entry;
+use std::collections::HashMap;
+use std::default::Default;
 
 pub struct Ui {
     elements: Vec<Box<Element>>,
@@ -19,8 +18,13 @@ pub struct Ui {
 impl Ui {
     pub fn add_font(&mut self, font_name: String, font_file: graphics::Font) {
         match self.fonts.entry(font_name) {
-            Entry::Occupied(o) => println!("Attempted to add font '{}' but it was already loaded by Ui", &o.key()),
-            Entry::Vacant(v) => {v.insert(font_file);},
+            Entry::Occupied(o) => println!(
+                "Attempted to add font '{}' but it was already loaded by Ui",
+                &o.key()
+            ),
+            Entry::Vacant(v) => {
+                v.insert(font_file);
+            }
         };
     }
 
@@ -37,6 +41,10 @@ impl Ui {
             }
         }
         result
+    }
+
+    pub fn process_event(&mut self, event: &event::Event) {
+        ()
     }
 }
 
@@ -60,48 +68,68 @@ pub trait Element {
 
 pub struct Button {
     pub bg_color: graphics::Color,
-    pub height: usize,
     pub hover_bg_color: graphics::Color,
     pub id: usize,
-    pub is_hovered: bool,
-    pub label: graphics::Text,
-    pub position: graphics::Point2,
-    pub width: usize,
+    is_hovered: bool,
+    pub label: Text,
+    mesh: Mesh,
+    rect: Rect,
 }
 
 impl Button {
+    pub fn new(
+        ctx: &mut Context,
+        id: usize,
+        label: Text,
+        rect: graphics::Rect,
+        bg_color: graphics::Color,
+        hover_bg_color: graphics::Color,
+    ) -> Self {
+        let x1 = rect.x;
+        let x2 = rect.x + rect.w;
+        let y1 = rect.y;
+        let y2 = rect.y + rect.h;
+        let vertices = [
+            Point2::new(x1, y1),
+            Point2::new(x2, y1),
+            Point2::new(x2, y2),
+            Point2::new(x1, y2),
+        ];
+
+        let m = Mesh::new_polygon(ctx, DrawMode::Fill, &vertices).unwrap();
+
+        Button {
+            id,
+            mesh: m,
+            label,
+            bg_color,
+            hover_bg_color,
+            rect,
+            is_hovered: false,
+        }
+    }
+
     fn get_center_point(&self) -> graphics::Point2 {
-        let offset_x = self.width as f32 / 2.0;
-        let offset_y = self.height as f32 / 2.0;
+        let offset_x = self.rect.w / 2.0;
+        let offset_y = self.rect.h / 2.0;
 
-        let pos_x = self.position.x;
-        let pos_y = self.position.y;
+        let pos_x = self.rect.x;
+        let pos_y = self.rect.y;
 
-        graphics::Point2::new(
-            pos_x + offset_x,
-            pos_y + offset_y
-        )
+        graphics::Point2::new(pos_x + offset_x, pos_y + offset_y)
     }
 }
 
 impl Element for Button {
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-
         let bg_color = if self.is_hovered {
             self.hover_bg_color
         } else {
             self.bg_color
         };
 
-        let rect = graphics::Rect {
-            x: 0.0,
-            y: 0.0,
-            w: self.width as f32,
-            h: self.height as f32,
-        };
-
         let bg_params = graphics::DrawParam {
-            dest: self.position,
+            // dest: self.position,
             color: Some(bg_color),
             ..Default::default()
         };
@@ -112,8 +140,7 @@ impl Element for Button {
             ..Default::default()
         };
 
-        graphics::set_color(ctx, bg_color);
-        graphics::rectangle(ctx, graphics::DrawMode::Fill, rect);
+        graphics::draw_ex(ctx, &self.mesh, bg_params);
         graphics::draw_ex(ctx, &self.label, label_params);
 
         Ok(())
@@ -131,5 +158,5 @@ impl Element for Button {
 pub enum UiEvent {
     Click(usize),
     MouseEnter(usize),
-    MouseLeave(usize)
+    MouseLeave(usize),
 }

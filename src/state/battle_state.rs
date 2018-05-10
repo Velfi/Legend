@@ -1,4 +1,3 @@
-
 use super::{ggez::{event,
                    graphics::{self, Point2},
                    Context,
@@ -6,14 +5,9 @@ use super::{ggez::{event,
             State,
             StateTransition};
 
-use std::sync::mpsc;
-use std::fmt;
 use std::default::Default;
-
-use super::ui::{
-    Ui,
-    Button
-};
+use std::fmt;
+use std::sync::mpsc;
 
 /// The main state for now. Will maybe become a menu later.
 pub struct BattleState {
@@ -24,44 +18,18 @@ pub struct BattleState {
     player_events_rx: mpsc::Receiver<Action>,
     state_label: graphics::Text,
     font: graphics::Font,
-    ui: Ui
 }
 
 impl BattleState {
     pub fn new(ctx: &mut Context) -> GameResult<BattleState> {
-
         let (tx, rx) = mpsc::channel();
 
         let player = Combatant::new(String::from("Player"));
         let enemy = Combatant::new(String::from("Enemy"));
 
-        let battle = Battle::new(
-            vec!(player),
-            vec!(enemy),
-        );
+        let battle = Battle::new(vec![player], vec![enemy]);
 
-        let font_sm = graphics::Font::new(ctx, "/font.ttf", 12)?;
-        let font_md = graphics::Font::new(ctx, "/font.ttf", 24)?;
-        let font_lg = graphics::Font::new(ctx, "/font.ttf", 48)?;
         let font = graphics::Font::new(ctx, "/font.ttf", 48)?;
-
-        let mut battle_ui = Ui::default();
-        battle_ui.add_font("small".to_string(), font_sm);
-        battle_ui.add_font("medium".to_string(), font_md);
-        battle_ui.add_font("large".to_string(), font_lg);
-
-        let button = Button {
-            position: graphics::Point2::new(200.0, 200.0),
-            height: 50,
-            width: 50,
-            is_hovered: false,
-            id: 12,
-            label: graphics::Text::new(ctx, "Test Button", &font).unwrap(),
-            bg_color: graphics::Color::from_rgb(0, 50, 200),
-            hover_bg_color: graphics::Color::from_rgb(200, 50, 0),
-        };
-
-        battle_ui.add_element(Box::new(button));
 
         let s = BattleState {
             quit: false,
@@ -71,7 +39,6 @@ impl BattleState {
             player_events_rx: rx,
             state_label: graphics::Text::new(ctx, "Battle State", &font)?,
             font,
-            ui: battle_ui,
         };
         Ok(s)
     }
@@ -126,13 +93,7 @@ impl State for BattleState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
         draw_turn_phase(ctx, &self.font, &self.battle.turn_phase);
-        graphics::draw(
-            ctx,
-            &self.state_label,
-            Point2::new(600.0, 10.0),
-            0.0
-        )?;
-        self.ui.draw(ctx);
+        graphics::draw(ctx, &self.state_label, Point2::new(600.0, 10.0), 0.0)?;
         graphics::present(ctx);
         Ok(())
     }
@@ -147,12 +108,7 @@ fn draw_turn_phase(ctx: &mut Context, font: &graphics::Font, phase: &TurnPhase) 
         TurnPhase::Start => "Turn start",
     };
     let phase_text = graphics::Text::new(ctx, phase_str, font).unwrap();
-    graphics::draw(
-        ctx,
-        &phase_text,
-        Point2::new(10.0, 10.0),
-        0.0
-    ).unwrap();
+    graphics::draw(ctx, &phase_text, Point2::new(10.0, 10.0), 0.0).unwrap();
 }
 
 // fn draw_combatant_hp(ctx: &mut Context, font: &graphics::Font, Combatant) {
@@ -196,7 +152,7 @@ impl Default for Action {
 
 impl fmt::Display for Action {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let action = match *self{
+        let action = match *self {
             Action::Attack => "Attack",
             Action::Charge => "Charge",
             Action::Parry => "Parry",
@@ -219,7 +175,7 @@ pub struct Combatant {
 }
 
 impl Combatant {
-    pub fn new(name: String)-> Self {
+    pub fn new(name: String) -> Self {
         Combatant {
             name,
             attack: 10,
@@ -246,7 +202,10 @@ impl Combatant {
             self.hp -= damage;
             target.is_parry = false;
         } else {
-            println!("{} attacked {} for {} damage!", self.name, target.name, damage);
+            println!(
+                "{} attacked {} for {} damage!",
+                self.name, target.name, damage
+            );
             target.hp -= damage;
         }
     }
@@ -326,12 +285,17 @@ pub fn player_combatant_turn(state: &mut BattleState) -> TurnPhase {
             } else {
                 next_phase
             }
-        },
+        }
         TurnPhase::DoChoice => {
             match state.battle.attackers[0].action {
-                Action::Attack => state.battle.attackers[0].do_attack(&mut state.battle.defenders[0]),
+                Action::Attack => {
+                    state.battle.attackers[0].do_attack(&mut state.battle.defenders[0])
+                }
                 Action::Charge => if state.battle.attackers[0].do_charge() {
-                    println!("{} is charging their attack!", state.battle.attackers[0].name);
+                    println!(
+                        "{} is charging their attack!",
+                        state.battle.attackers[0].name
+                    );
                 },
                 Action::Parry => if state.battle.attackers[0].do_parry() {
                     println!("{} is ready for anything!", state.battle.attackers[0].name);
@@ -339,25 +303,25 @@ pub fn player_combatant_turn(state: &mut BattleState) -> TurnPhase {
                 Action::None => (),
             };
             next_phase.next()
-        },
+        }
         TurnPhase::CheckWin => {
             match state.battle.check_win() {
                 BattleResult::AttackersWin => {
                     println!("The attackers have won the battle!");
                     state.quit = true;
-                },
+                }
                 BattleResult::AttackersLose => {
                     println!("The attackers have lost the battle.");
                     state.quit = true;
-                },
+                }
                 BattleResult::None => (),
             };
             next_phase.next()
-        },
+        }
         TurnPhase::End => {
             state.battle.turn_count += 1;
             next_phase.next()
-        },
+        }
     };
 
     next_phase

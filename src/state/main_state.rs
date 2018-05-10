@@ -10,6 +10,7 @@ pub struct MainState {
     pos_x: f32,
     quit: bool,
     debug_battle: bool,
+    debug_field: bool,
     state_label: graphics::Text,
 }
 
@@ -21,6 +22,7 @@ impl MainState {
             quit: false,
             state_label: graphics::Text::new(ctx, "Main State", &font)?,
             debug_battle: false,
+            debug_field: false,
         };
         Ok(s)
     }
@@ -37,12 +39,19 @@ impl State for MainState {
                 println!("Quitting");
                 self.quit = true;
             }
-            | event::Event::KeyDown {
+            event::Event::KeyDown {
                 keycode: Some(event::Keycode::B),
                 ..
             } => {
                 println!("Battle Starting");
                 self.debug_battle = true;
+            }
+            event::Event::KeyDown {
+                keycode: Some(event::Keycode::F),
+                ..
+            } => {
+                println!("Field Mode Starting");
+                self.debug_field = true;
             }
             input => println!("Event fired: {:?}", input),
         }
@@ -52,9 +61,15 @@ impl State for MainState {
         if self.quit {
             Ok(StateTransition::Quit)
         } else if self.debug_battle {
-            let battle = super::battle_state::BattleState::new(ctx).expect("Failed to create Battle State.");
+            let battle =
+                super::battle_state::BattleState::new(ctx).expect("Failed to create Battle State.");
 
             Ok(StateTransition::Push(Box::new(battle)))
+        } else if self.debug_field {
+            let field_state =
+                super::field_state::FieldState::new(ctx).expect("Failed to create Field State.");
+
+            Ok(StateTransition::Push(Box::new(field_state)))
         } else {
             self.pos_x = self.pos_x % 800.0 + 1.0;
             Ok(StateTransition::None)
@@ -70,12 +85,7 @@ impl State for MainState {
             100.0,
             2.0,
         )?;
-        graphics::draw(
-            ctx,
-            &self.state_label,
-            Point2::new(600.0, 0.0),
-            0.0
-        )?;
+        graphics::draw(ctx, &self.state_label, Point2::new(600.0, 0.0), 0.0)?;
         graphics::present(ctx);
         Ok(())
     }
