@@ -13,6 +13,7 @@ pub struct Button {
     pub label: Text,
     mesh: Mesh,
     rect: Rect,
+    pub click_callback: Box<FnMut()>,
 }
 
 impl Button {
@@ -46,6 +47,7 @@ impl Button {
             rect,
             is_clicked: false,
             is_hovered: false,
+            click_callback: Box::new(move || ()),
         }
     }
 
@@ -119,6 +121,6 @@ impl Element for Button {
     }
 
     fn click(&mut self) {
-        println!("Button with ID {} was clicked.", self.id);
+        (self.click_callback)();
     }
 }

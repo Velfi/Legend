@@ -29,7 +29,7 @@ impl FieldState {
             graphics::Text::new(ctx, "Test Button", &battle_ui.fonts.get("medium").unwrap())
                 .unwrap();
 
-        let button = Button::new(
+        let mut button = Button::new(
             ctx,
             12,
             button_label,
@@ -37,6 +37,8 @@ impl FieldState {
             graphics::Color::from_rgb(0, 50, 200),
             graphics::Color::from_rgb(200, 50, 0),
         );
+
+        button.click_callback = Box::new(move || println!("callback thing worked"));
 
         battle_ui.add_element(Box::new(button));
 
@@ -81,7 +83,7 @@ impl State for FieldState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
         graphics::draw(ctx, &self.state_label, Point2::new(600.0, 10.0), 0.0)?;
-        self.ui.draw(ctx);
+        self.ui.draw(ctx)?;
         graphics::present(ctx);
         Ok(())
     }
