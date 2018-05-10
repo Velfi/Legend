@@ -11,7 +11,6 @@ use super::super::ui::{Button, Ui};
 pub struct FieldState {
     quit: bool,
     state_label: graphics::Text,
-    font: graphics::Font,
     ui: Ui,
 }
 
@@ -43,7 +42,6 @@ impl FieldState {
         let s = FieldState {
             quit: false,
             state_label: graphics::Text::new(ctx, "Field State", &font)?,
-            font,
             ui: battle_ui,
         };
         Ok(s)
