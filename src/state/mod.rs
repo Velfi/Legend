@@ -4,6 +4,7 @@ pub mod field_state;
 pub mod main_state;
 
 use super::ggez::{self, event, Context, GameResult};
+
 use std::mem;
 
 pub trait State {
@@ -22,9 +23,9 @@ pub trait State {
 
 /// A struct for managing game states and transitions between them. Calls `update()`
 /// and `draw()` on the state on top of the `state_stack`.
-pub struct StateMachine {
+pub struct StateMachine<'a> {
     /// A Vec of states that will be managed by the State Machine.
-    state_stack: Vec<Box<State>>,
+    state_stack: Vec<Box<State + 'a>>,
     /// The state machine will halt if this is set to false. Useful for quitting.
     running: bool,
     /// The transition stored in this field will be evaluated and replaced with a
@@ -32,7 +33,15 @@ pub struct StateMachine {
     transition: StateTransition,
 }
 
-impl StateMachine {
+impl<'a> StateMachine<'a> {
+    pub fn new<S: State + 'a>(initial_state: S) -> StateMachine<'a> {
+        StateMachine {
+            running: false,
+            state_stack: vec![Box::new(initial_state)],
+            transition: StateTransition::None,
+        }
+    }
+
     pub fn start(mut self, ctx: &mut Context, events: &mut event::Events) {
         self.running = true;
 
@@ -52,14 +61,6 @@ impl StateMachine {
             self.transition(transition);
 
             ggez::timer::yield_now();
-        }
-    }
-
-    pub fn new(states: Vec<Box<State>>) -> Self {
-        StateMachine {
-            state_stack: states,
-            running: false,
-            transition: StateTransition::None,
         }
     }
 
