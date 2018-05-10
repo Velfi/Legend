@@ -5,7 +5,7 @@ use super::{ggez::{event,
             State,
             StateTransition};
 
-use super::super::ui::{Button, Ui};
+use super::super::ui::{button::Button, Ui};
 
 /// The main state for now. Will maybe become a menu later.
 pub struct FieldState {
@@ -19,20 +19,21 @@ impl FieldState {
         let font_sm = graphics::Font::new(ctx, "/font.ttf", 12)?;
         let font_md = graphics::Font::new(ctx, "/font.ttf", 24)?;
         let font_lg = graphics::Font::new(ctx, "/font.ttf", 48)?;
-        let font = graphics::Font::new(ctx, "/font.ttf", 48)?;
 
         let mut battle_ui = Ui::default();
         battle_ui.add_font("small".to_string(), font_sm);
         battle_ui.add_font("medium".to_string(), font_md);
         battle_ui.add_font("large".to_string(), font_lg);
 
-        let button_label = graphics::Text::new(ctx, "Test Button", &font).unwrap();
+        let button_label =
+            graphics::Text::new(ctx, "Test Button", &battle_ui.fonts.get("medium").unwrap())
+                .unwrap();
 
         let button = Button::new(
             ctx,
             12,
             button_label,
-            graphics::Rect::new(200.0, 200.0, 200.0, 80.0),
+            graphics::Rect::new(200.0, 200.0, 120.0, 48.0),
             graphics::Color::from_rgb(0, 50, 200),
             graphics::Color::from_rgb(200, 50, 0),
         );
@@ -41,7 +42,11 @@ impl FieldState {
 
         let s = FieldState {
             quit: false,
-            state_label: graphics::Text::new(ctx, "Field State", &font)?,
+            state_label: graphics::Text::new(
+                ctx,
+                "Field State",
+                &battle_ui.fonts.get("large").unwrap(),
+            )?,
             ui: battle_ui,
         };
         Ok(s)
