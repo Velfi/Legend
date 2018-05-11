@@ -14,6 +14,8 @@ use fern::colors::{Color, ColoredLevelConfig};
 mod state;
 use state::{main_state::MainState, StateMachine};
 
+mod ui;
+
 pub fn main() {
     if let Err(e) = setup_logger() {
         println!("The logger failed to start with error: {}", e);

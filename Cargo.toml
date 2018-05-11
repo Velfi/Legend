@@ -12,3 +12,4 @@ rand = "0.4"
 shrev = "0.8"
 log = "0.4"
 fern = { version = "0.5", features = ["colored"] }
+shrev = "0.8"
