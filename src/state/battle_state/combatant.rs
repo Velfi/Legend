@@ -1,64 +1,21 @@
-use std::fmt;
-
 const MAX_PARRY_CHARGES: usize = 2;
-
-#[derive(Clone)]
-pub enum CombatantTurnPhase {
-    Start,
-    AwaitChoice,
-    End,
-}
-
-impl CombatantTurnPhase {
-    pub fn next(self) -> Self {
-        match self {
-            CombatantTurnPhase::Start => CombatantTurnPhase::AwaitChoice,
-            CombatantTurnPhase::AwaitChoice => CombatantTurnPhase::End,
-            CombatantTurnPhase::End => CombatantTurnPhase::Start,
-        }
-    }
-}
-
-pub enum Action<'a> {
-    Attack(&'a mut Combatant),
-    Charge,
-    Parry,
-    None,
-}
-
-impl<'a> Default for Action<'a> {
-    fn default() -> Self {
-        Action::None
-    }
-}
-
-impl<'a> fmt::Display for Action<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let action = match *self {
-            Action::Attack(_) => "Attack",
-            Action::Charge => "Charge",
-            Action::Parry => "Parry",
-            Action::None => "No Action",
-        };
-        write!(f, "{}", action)
-    }
-}
 
 pub struct Combatant {
     // action: Action,
-    attack: isize,
-    defense: isize,
-    hp: isize,
-    is_charged: bool,
-    is_parry: bool,
-    name: String,
-    parry_charge_counter: isize,
-    parry_charges: isize,
+    pub attack: isize,
+    pub defense: isize,
+    pub hp: isize,
+    pub is_charged: bool,
+    pub is_parry: bool,
+    pub name: String,
+    pub parry_charge_counter: isize,
+    pub parry_charges: isize,
+    pub sprite_name: String,
     // queued_action: Action,
 }
 
 impl Combatant {
-    pub fn new(name: String) -> Self {
+    pub fn new(name: String, sprite: String) -> Self {
         Combatant {
             // action: Action::None,
             attack: 10,
@@ -69,6 +26,7 @@ impl Combatant {
             name,
             parry_charge_counter: 3,
             parry_charges: 0,
+            sprite_name: sprite,
             // queued_action: Action::None,
         }
     }
@@ -119,6 +77,14 @@ impl Combatant {
         //     Action::Parry => {self.do_parry();},
         //     Action::None => (),
         // };
+    }
+
+    pub fn is_dead(&self) -> bool {
+        if self.hp <= 0 {
+            true
+        } else {
+            false
+        }
     }
 }
 

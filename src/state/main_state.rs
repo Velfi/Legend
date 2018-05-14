@@ -50,10 +50,10 @@ impl State for MainState {
                 keycode: Some(event::Keycode::F),
                 ..
             } => {
-                println!("Field Mode Starting");
+                debug!("Field Mode Starting");
                 self.debug_field = true;
             }
-            input => println!("Event fired: {:?}", input),
+            input => trace!("Event fired: {:?}", input),
         }
     }
 
@@ -66,8 +66,7 @@ impl State for MainState {
 
             Ok(StateTransition::Push(Box::new(battle)))
         } else if self.debug_field {
-            let field_state =
-                super::field_state::FieldState::new(ctx).expect("Failed to create Field State.");
+            let field_state = super::field_state::FieldState::new(ctx).expect("Failed to create Field State.");
 
             Ok(StateTransition::Push(Box::new(field_state)))
         } else {

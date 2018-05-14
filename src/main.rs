@@ -3,6 +3,8 @@ use ggez::conf;
 use ggez::event;
 use ggez::Context;
 
+extern crate slab;
+
 extern crate shrev;
 
 #[macro_use]

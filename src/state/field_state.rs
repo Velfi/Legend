@@ -38,7 +38,7 @@ impl FieldState {
             graphics::Color::from_rgb(200, 50, 0),
         );
 
-        button.click_callback = Box::new(move || println!("callback thing worked"));
+        button.click_callback = Box::new(move || debug!("callback thing worked"));
 
         battle_ui.add_element(Box::new(button));
 

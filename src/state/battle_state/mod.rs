@@ -1,13 +1,18 @@
+use std::collections::HashMap;
+use std::fmt;
+
 use super::{ggez::{event,
-                   graphics::{self, Point2},
+                   graphics::{self, Font, Image, Point2, Text},
                    Context,
                    GameResult},
             State,
             StateTransition};
 
+use super::super::slab::Slab;
+
 // use super::shrev::EventChannel;
 pub mod combatant;
-use self::combatant::{Combatant, CombatantTurnPhase};
+use self::combatant::Combatant;
 
 pub mod team;
 use self::team::Team;
@@ -16,29 +21,28 @@ pub struct BattleState {
     quit: bool,
     battle: Battle,
     state_label: graphics::Text,
-    font: graphics::Font,
+    sprites: HashMap<String, Image>,
 }
 
 impl BattleState {
     pub fn new(ctx: &mut Context) -> GameResult<BattleState> {
-        let player = Combatant::new(String::from("Player"));
-        let enemy = Combatant::new(String::from("Enemy"));
+        let font = Font::new(ctx, "/font.ttf", 48)?;
 
-        let battle = Battle::new(
-            vec!(
-                Team::new(vec!(player)),
-                Team::new(vec!(enemy))
-            )
-        );
-
-        let font = graphics::Font::new(ctx, "/font.ttf", 48)?;
-
-        let s = BattleState {
+        let mut s = BattleState {
             quit: false,
-            battle,
-            state_label: graphics::Text::new(ctx, "Battle State", &font)?,
-            font,
+            battle: Battle::new(),
+            state_label: Text::new(ctx, "Battle State", &font)?,
+            sprites: HashMap::new(),
         };
+
+        let gs = Image::new(ctx, "/green_swordsman.png").unwrap();
+        let rs = Image::new(ctx, "/red_swordsman.png").unwrap();
+        let hw = Image::new(ctx, "/hollow_warrior.png").unwrap();
+
+        s.sprites.insert(String::from("green_swordsman"), gs);
+        s.sprites.insert(String::from("red_swordsman"), rs);
+        s.sprites.insert(String::from("hollow_warrior"), hw);
+
         Ok(s)
     }
 }
@@ -55,8 +59,8 @@ impl State for BattleState {
                 self.quit = true;
             }
             input => {
-                // self.battle.teams[self.battle.current_team].process_event();
-            },
+                self.battle.teams[self.battle.current_team].process_event(input);
+            }
         }
     }
 
@@ -105,28 +109,32 @@ pub struct Battle {
     current_team: usize,
     running: bool,
     teams: Vec<Team>,
+    combatants: Slab<Combatant>,
     turn_count: usize,
 }
 
 impl Battle {
-    pub fn new(teams: Vec<Team>) -> Self {
+    pub fn new() -> Self {
+        let mut combatants = Slab::with_capacity(8);
+
+        let player_team = Team::new(vec![combatants.insert(Combatant::new(
+            String::from("Player"),
+            String::from("green_swordsman"),
+        ))]);
+
+        let enemy_team = Team::new(vec![combatants.insert(Combatant::new(
+            String::from("Enemy"),
+            String::from("hollow_warrior"),
+        ))]);
+
         Battle {
             running: false,
-            teams,
+            teams: vec![player_team, enemy_team],
+            combatants,
             current_team: 0,
             turn_count: 0,
             battle_event: BattleEvent::BattleStart,
         }
-    }
-
-    pub fn check_win(&self) -> Option<usize> {
-        let mut is_a_team_dead = false;
-        for (index, team) in self.teams.iter().enumerate() {
-            if team.is_dead() {
-                return Some(index);
-            }
-        }
-        None
     }
 
     pub fn update(&mut self) {
@@ -141,7 +149,7 @@ impl Battle {
         self.battle_event = BattleEvent::None;
 
         if self.running {
-            self.teams[self.current_team].update();
+            self.teams[self.current_team].update(&mut self.combatants);
             if self.teams[self.current_team].turn_over {
                 self.next_team();
             }
@@ -174,6 +182,40 @@ impl Battle {
     pub fn turn_end(&self) {
         println!("t{}: Turn End", self.turn_count)
     }
+
+    pub fn get_team_combatants(&self, team: &Team) -> Vec<&Combatant> {
+        let mut combatant_refs = Vec::new();
+        for teammate in team.get_members().iter() {
+            if let Some(combatant) = self.combatants.get(*teammate) {
+                combatant_refs.push(combatant);
+            }
+        }
+        combatant_refs
+    }
+
+    /// Return `Vec<usize>` of indexs of teams whose combatants are all dead.
+    pub fn check_for_dead_team(&self) -> Vec<usize> {
+        let mut dead_teams = Vec::new();
+        for (index, team) in self.teams.iter().enumerate() {
+            let combatant_refs = self.get_team_combatants(team);
+            if self.is_team_dead(&combatant_refs) {
+                dead_teams.push(index);
+            }
+        }
+        dead_teams
+    }
+
+    pub fn is_team_dead(&self, combatant_refs: &Vec<&Combatant>) -> bool {
+        let mut someone_is_alive = false;
+        if combatant_refs.len() > 0 {
+            for combatant_ref in combatant_refs {
+                if !combatant_ref.is_dead() {
+                    someone_is_alive = true;
+                }
+            }
+        }
+        !someone_is_alive
+    }
 }
 
 enum BattleEvent {
@@ -182,4 +224,29 @@ enum BattleEvent {
     TurnEnd,
     BattleEnd,
     None,
+}
+
+pub enum Action {
+    Attack(usize, usize),
+    Charge(usize),
+    Parry(usize),
+    None,
+}
+
+impl<'a> Default for Action {
+    fn default() -> Self {
+        Action::None
+    }
+}
+
+impl<'a> fmt::Display for Action {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let action = match *self {
+            Action::Attack(_, _) => "Attack",
+            Action::Charge(_) => "Charge",
+            Action::Parry(_) => "Parry",
+            Action::None => "No Action",
+        };
+        write!(f, "{}", action)
+    }
 }
