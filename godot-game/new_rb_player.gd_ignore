@@ -1,0 +1,263 @@
+extends RigidBody3D
+class_name Player
+
+signal toggle_soul_form
+
+var _rb = self
+var _gravitationalForce: Vector3
+var _rayDir: Vector3 = Vector3.DOWN
+var _previousVelocity: Vector3 = Vector3.ZERO
+var _moveContext: Vector2
+
+# Other
+var _adjustInputsToCameraAngle = false
+
+var _shouldMaintainHeight = true
+
+# Height Spring
+var _rideHeight = 1.75
+var _rayToGroundLength = 3 # rayToGroundLength: max distance of raycast to ground (Note, this should be greater than the rideHeight).
+var _rideSpringStrength = 50
+var _rideSpringDamper = 5
+
+enum LookDirectionOptions {VELOCITY, ACCELERATION, MOVE_INPUT}
+
+var _uprightTargetRot = Quaternion(0, 0, 0, 1) # Adjust y value to match the desired direction to face.
+var _lastTargetRot: Quaternion
+var _platformInitRot: Vector3
+var didLastRayHit: bool
+
+# Upright Spring
+var _characterLookDirection: LookDirectionOptions = LookDirectionOptions.VELOCITY
+var _uprightSpringStrength: float = 40
+var _uprightSpringDamper: float = 5
+
+var _moveInput: Vector3
+var _speedFactor = 1
+var _maxAccelForceFactor = 1
+var _m_GoalVel = Vector3.ZERO
+
+# Movement
+var _maxSpeed: float = 8
+var _acceleration: float = 200
+var _maxAccelForce: float = 150
+var _leanFactor: float = 0.25
+var _accelerationFactorFromDot: Curve
+var _maxAccelerationForceFactorFromDot: Curve
+var _moveForceScale: Vector3 = Vector3(1, 0, 1)
+
+var _is_in_soul_form = false
+var _prevGrounded = false
+
+func _ready() -> void:
+	%AnimationTree.active = true
+	toggle_soul_form.connect(_toggle_soul_form)
+	_gravitationalForce = Vector3.DOWN * 9.8 * _rb.mass
+
+func check_if_grounded(ray_hit_ground: bool, ray_hit: RayCast) -> bool:
+	var grounded: bool
+	if ray_hit_ground:
+		grounded = ray_hit.distance <= _rideHeight * 1.3 # 1.3 allows for greater leniency (as the value will oscillate about the rideHeight).
+	else:
+		grounded = false
+	return grounded
+
+func get_look_direction(delta: float, look_direction_option: LookDirectionOptions) -> Vector3:
+	var look_direction: Vector3 = Vector3.ZERO
+	if look_direction_option == LookDirectionOptions.VELOCITY \
+	or look_direction_option == LookDirectionOptions.ACCELERATION:
+		var velocity: Vector3 = _rb.linear_velocity
+		velocity.y = 0
+		if look_direction_option == LookDirectionOptions.VELOCITY:
+			look_direction = velocity
+		elif look_direction_option == LookDirectionOptions.ACCELERATION:
+			var delta_velocity: Vector3 = velocity - _previousVelocity
+			_previousVelocity = velocity
+			var acceleration: Vector3 = delta_velocity / delta
+			look_direction = acceleration
+	elif look_direction_option == LookDirectionOptions.MOVE_INPUT:
+		look_direction = _moveInput
+	return look_direction
+
+func _physics_process(delta: float) -> void:
+	_moveInput = Vector3(
+		Input.get_axis("ui_left", "ui_right"),
+		0.0,
+		Input.get_axis("ui_up", "ui_down")
+	).normalized()
+
+	if _adjustInputsToCameraAngle:
+		_moveInput = adjust_input_to_face_camera(_moveInput)
+
+	var cast_result = raycast_to_ground()
+	var rayHitGround = cast_result[0]
+	var rayHit = cast_result[1]
+	set_platform(rayHit)
+
+	var grounded = check_if_grounded(rayHitGround, rayHit)
+	if grounded:
+		if not _prevGrounded:
+			if not %AudioManager.is_playing("Land"):
+				%AudioManager.play("Land")
+
+		if _moveInput.length() != 0:
+			if not %AudioManager.is_playing("Walking"):
+				%AudioManager.play("Walking")
+		else:
+			%AudioManager.stop("Walking")
+
+		# if _dustParticleSystem:
+		# 	if not _emission.enabled:
+		# 		_emission.enabled = true
+	else:
+		%AudioManager.stop("Walking")
+
+		# if _dustParticleSystem:
+		# 	if _emission.enabled:
+		# 		_emission.enabled = false
+
+	_timeSinceUngrounded += delta
+
+	if _timeSinceJump > 0.2:
+		_isJumping = false
+
+	character_move(_moveInput, rayHit)
+	character_jump(_jumpInput, grounded, rayHit)
+
+	if rayHitGround and _shouldMaintainHeight:
+		maintain_height(rayHit)
+
+	var lookDirection = get_look_direction(_characterLookDirection)
+	maintain_upright(lookDirection, rayHit)
+
+	_prevGrounded = grounded
+
+func raycast_to_ground():
+	var rayHitGround: bool
+	var rayHit: RayCast3D
+	var rayToGround: RayCast3D = RayCast3D.new()
+	rayToGround.cast_to = _rayDir * _rayToGroundLength
+	rayToGround.force_raycast_update()
+	rayHitGround = rayToGround.is_colliding()
+	if rayHitGround:
+		rayHit = rayToGround.get_collider()
+	return [rayHitGround, rayHit]
+
+func maintain_height(ray_hit: RayCast3D) -> void:
+	var vel: Vector3 = _rb.linear_velocity
+	var otherVel: Vector3 = Vector3.ZERO
+	var hitBody: Object = ray_hit.get_collider()
+	if hitBody != null and hitBody.has_method("get_linear_velocity"):
+		otherVel = hitBody.linear_velocity
+	var rayDirVel: float = _rayDir.dot(vel)
+	var otherDirVel: float = _rayDir.dot(otherVel)
+	var relVel: float = rayDirVel - otherDirVel
+	var currHeight: float = ray_hit.distance - _rideHeight
+	var springForce: float = (currHeight * _rideSpringStrength) - (relVel * _rideSpringDamper)
+	var maintainHeightForce: Vector3 = -_gravitationalForce + springForce * Vector3.DOWN
+	var oscillationForce: Vector3 = springForce * Vector3.DOWN
+	_rb.add_force(maintainHeightForce)
+	_squashAndStretchOcillator.apply_force(oscillationForce)
+
+	# Apply force to objects beneath
+	if hitBody != null and hitBody.has_method("add_force_at_position"):
+		# TODO make this work
+		hitBody.add_force_at_position( - maintainHeightForce, ray_hit.position)
+
+func calculate_target_rotation(yLookAt: Vector3, ray_hit: RayCast3D=null) -> void:
+	if didLastRayHit:
+		_lastTargetRot = _uprightTargetRot
+		_platformInitRot = transform.parent.rotation.get_euler()
+	if ray_hit.get_collider() == null:
+		didLastRayHit = true
+	else:
+		didLastRayHit = false
+
+	if yLookAt != Vector3.ZERO:
+		_uprightTargetRot = Quaternion().look_at(yLookAt, Vector3.UP)
+		_lastTargetRot = _uprightTargetRot
+		_platformInitRot = transform.parent.rotation.get_euler()
+	else:
+		var platformRot: Vector3 = transform.parent.rotation.get_euler()
+		var deltaPlatformRot: Vector3 = platformRot - _platformInitRot
+		var yAngle: float = _lastTargetRot.get_euler().y + deltaPlatformRot.y
+		_uprightTargetRot = Quaternion(Vector3(0, yAngle, 0))
+
+func maintain_upright(yLookAt: Vector3, ray_hit: RayCast3D=null) -> void:
+	calculate_target_rotation(yLookAt, ray_hit)
+
+	var currentRot: Quaternion = transform.basis.get_rotation_quaternion()
+	var toGoal: Quaternion = currentRot.slerp(_uprightTargetRot, 1)
+
+	var rotAxis: Vector3
+	var rotDegrees: float
+
+	toGoal.get_axis_angle(rotAxis, rotDegrees)
+	rotAxis.normalized()
+
+	var rotRadians: float = rotDegrees * PI / 180
+
+	_rb.add_torque((rotAxis * (rotRadians * _uprightSpringStrength)) - (_rb.angular_velocity * _uprightSpringDamper))
+
+func set_platform(ray_hit: RayCast3D=null):
+	var rigidPlatform = ray_hit.transform.GetComponentRigidPlatform()
+
+	if rigidPlatform != null:
+		var rigidParent = rigidPlatform.rigidParent
+		transform.SetParent(rigidParent.transform)
+	else:
+		transform.SetParent(null)
+
+func character_move(move_input: Vector3, ray_hit: RayCast3D) -> void:
+	var m_UnitGoal: Vector3 = move_input
+	var unitVel: Vector3 = _m_GoalVel.normalized
+	var velDot: float = m_UnitGoal.dot(unitVel)
+	var accel: float = _acceleration * _accelerationFactorFromDot.interpolate(velDot)
+	var goalVel: Vector3 = m_UnitGoal * _maxSpeed * _speedFactor
+	var otherVel: Vector3 = Vector3.ZERO
+	var hitBody: Object = ray_hit.get_collider()
+	_m_GoalVel = _m_GoalVel.linear_interpolate(goalVel, accel * delta)
+	var neededAccel: Vector3 = (_m_GoalVel - _rb.linear_velocity) / delta
+	var maxAccel: float = _maxAccelForce * _maxAccelerationForceFactorFromDot.interpolate(velDot) * _maxAccelForceFactor
+	neededAccel = neededAccel.clamped(maxAccel)
+	_rb.add_force_at_position(neededAccel * _rb.mass * _moveForceScale, transform.origin + Vector3(0, transform.scale.y * _leanFactor, 0))
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_soul_form") and not event.is_echo():
+		toggle_soul_form.emit()
+
+# func _physics_process(delta: float) -> void:
+	# var direction = Vector3(
+	# 	Input.get_axis("ui_left", "ui_right"),
+	# 	0.0,
+	# 	Input.get_axis("ui_up", "ui_down")
+	# ).normalized()
+	# %AnimationTree["parameters/blend_position"] = linear_velocity.length() / 2.9
+
+func _toggle_soul_form():
+	_is_in_soul_form = !_is_in_soul_form
+	
+	if _is_in_soul_form:
+		_set_soul_form()
+	else:
+		_set_body_form()
+
+func _set_soul_form():
+	%BodyMarker.visible = true
+	%BodyMarker.global_position = self.global_position
+	self.collision_layer = 0b0101
+	self.collision_mask = 0b0101
+	for mesh in find_children("*", "MeshInstance3D"):
+		mesh.mesh.material = preload ("res://player_soul.material")
+
+func _set_body_form():
+	%BodyMarker.visible = false
+	PhysicsServer3D.body_set_state(
+		get_rid(),
+		PhysicsServer3D.BODY_STATE_TRANSFORM,
+		Transform3D.IDENTITY.translated( %BodyMarker.global_position)
+	)
+	self.collision_layer = 0b0011
+	self.collision_mask = 0b0011
+	for mesh in find_children("*", "MeshInstance3D"):
+		mesh.mesh.material = preload ("res://player_body.material")

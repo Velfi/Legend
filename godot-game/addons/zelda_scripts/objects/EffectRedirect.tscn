@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdeueh358eo8g"]
+
+[sub_resource type="Resource" id="Resource_a276i"]
+metadata/__load_path__ = "res://scripts/interactables/effect_redirect.gd"
+
+[node name="EffectRedirect" type="Node3D"]
+script = SubResource("Resource_a276i")

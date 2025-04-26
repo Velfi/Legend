@@ -1,0 +1,93 @@
+[gd_scene load_steps=9 format=3 uid="uid://cgn806fhj6op3"]
+
+[ext_resource type="Script" uid="uid://c1jswu2soe4lc" path="res://lever.gd" id="1_b1op8"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rq3up"]
+size = Vector3(0.2, 0.3, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_duswp"]
+size = Vector3(0.05, 1, 0.05)
+
+[sub_resource type="Animation" id="Animation_in7uj"]
+resource_name = "ACTIVATE"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Handle:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.6, 0.733333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.261799, 3.48787e-16, 3.48787e-16), Vector3(0.301139, 3.52777e-16, 3.63151e-16), Vector3(-0.300197, 0, 0), Vector3(-0.261799, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_b1op8"]
+resource_name = "DEACTIVATE"
+length = 0.65
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Handle:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.133333, 0.5, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.261799, 0, 0), Vector3(-0.300197, 0, 0), Vector3(0.301139, 3.52777e-16, 3.63151e-16), Vector3(0.261799, 3.48787e-16, 3.48787e-16)]
+}
+
+[sub_resource type="Animation" id="Animation_pix2u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Handle:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.261799, 3.48787e-16, 3.48787e-16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cnfg5"]
+_data = {
+&"ACTIVATE": SubResource("Animation_in7uj"),
+&"DEACTIVATE": SubResource("Animation_b1op8"),
+&"RESET": SubResource("Animation_pix2u")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b1op8"]
+size = Vector3(0.215637, 0.989319, 0.407959)
+
+[node name="Lever" type="Node3D"]
+script = ExtResource("1_b1op8")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.15, 2.08165e-12)
+mesh = SubResource("BoxMesh_rq3up")
+
+[node name="Handle" type="Node3D" parent="."]
+transform = Transform3D(1, -2.58514e-16, 3.36902e-16, 3.36902e-16, 0.965926, -0.258819, -2.58514e-16, 0.258819, 0.965926, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Handle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.499253, 0)
+mesh = SubResource("BoxMesh_duswp")
+skeleton = NodePath("../..")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_cnfg5")
+}
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00143433, 0.489838, 0.00228125)
+shape = SubResource("BoxShape3D_b1op8")

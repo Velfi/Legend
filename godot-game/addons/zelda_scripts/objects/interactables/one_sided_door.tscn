@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3 uid="uid://c0t0m5qmp0jxv"]
+
+[ext_resource type="PackedScene" uid="uid://csvhvqdgxvjql" path="res://addons/zelda_scripts/objects/interactables/Interactable.tscn" id="2_1cvfs"]
+[ext_resource type="PackedScene" uid="uid://275mkgufwv41" path="res://addons/zelda_scripts/objects/providers/AdhocTooltipProvider.tscn" id="4_0s5q5"]
+
+[sub_resource type="Resource" id="Resource_1mty4"]
+metadata/__load_path__ = "res://scripts/interactables/OneSidedDoor.gd"
+
+[sub_resource type="Animation" id="Animation_fexua"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGBox3D/CSGCylinder3D:radius")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.2, 2.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3i27q"]
+_data = {
+&"open": SubResource("Animation_fexua")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2s8qx"]
+size = Vector3(2, 2, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dqu5t"]
+size = Vector3(1.4, 1.4, 0.05)
+
+[node name="OneSidedDoor" type="AnimatableBody3D"]
+script = SubResource("Resource_1mty4")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.5, 2.08165e-12)
+size = Vector3(2, 2, 0.1)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGBox3D"]
+transform = Transform3D(2.25947e-15, 4.37114e-08, 1, 1, -4.37114e-08, -3.48787e-16, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+operation = 2
+radius = 0.2
+height = 0.1
+sides = 16
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3i27q")
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.497209, 0)
+shape = SubResource("BoxShape3D_2s8qx")
+
+[node name="RightSide" parent="." instance=ExtResource("2_1cvfs")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.0744727)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightSide"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00196195, -5.96046e-08, 0.00271803)
+shape = SubResource("BoxShape3D_dqu5t")
+
+[node name="TooltipProvider" parent="RightSide" instance=ExtResource("4_0s5q5")]
+tooltip_text = "Open door"
+
+[node name="WrongSide" parent="." instance=ExtResource("2_1cvfs")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.078921)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WrongSide"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00452736)
+shape = SubResource("BoxShape3D_dqu5t")
+
+[node name="TooltipProvider" parent="WrongSide" instance=ExtResource("4_0s5q5")]
+tooltip_text = "This door can't be opened from this side"

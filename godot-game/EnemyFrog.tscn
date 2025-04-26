@@ -1,0 +1,91 @@
+[gd_scene load_steps=10 format=3 uid="uid://ubnpbsqkurr6"]
+
+[ext_resource type="Script" uid="uid://bb6pwjm42gve2" path="res://enemy_frog.gd" id="1_4hgrr"]
+[ext_resource type="PackedScene" uid="uid://bdk3piwmqtvgy" path="res://Frog.glb" id="1_vajnw"]
+[ext_resource type="Script" uid="uid://byxvc1g7acmdo" path="res://hurtbox.gd" id="3_w05gq"]
+[ext_resource type="Script" uid="uid://cw32qglyuy0eu" path="res://hitbox.gd" id="4_0eey6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4e5ra"]
+radius = 0.290651
+height = 1.12025
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_eq6r8"]
+radius = 0.290651
+height = 1.12025
+
+[sub_resource type="Animation" id="Animation_cdg1s"]
+resource_name = "Blink"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FrogModel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+
+[sub_resource type="Animation" id="Animation_rru6i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FrogModel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hslnt"]
+_data = {
+&"Blink": SubResource("Animation_cdg1s"),
+&"RESET": SubResource("Animation_rru6i")
+}
+
+[node name="EnemyFrog" type="Node3D"]
+script = ExtResource("1_4hgrr")
+
+[node name="FrogModel" parent="." instance=ExtResource("1_vajnw")]
+
+[node name="FrogModel" parent="FrogModel" instance=ExtResource("1_vajnw")]
+visible = false
+
+[node name="Hurtbox" type="Area3D" parent="." groups=["Enemy"]]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.209187, 0)
+collision_layer = 8
+collision_mask = 16
+monitorable = false
+script = ExtResource("3_w05gq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 0.0137703, 0.999905, 0, -0.999905, 0.0137703, 0, 0.0604564, -0.00604564)
+shape = SubResource("CapsuleShape3D_4e5ra")
+
+[node name="Hitbox" type="Area3D" parent="." groups=["Enemy"]]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.209187, 0)
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_0eey6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 0.0137703, 0.999905, 0, -0.999905, 0.0137703, 0, 0.0604564, -0.00604564)
+shape = SubResource("CapsuleShape3D_eq6r8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="HitAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hslnt")
+}

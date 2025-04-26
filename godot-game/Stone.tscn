@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://txl3oufr4j3v"]
+
+[ext_resource type="Script" uid="uid://g7quib6f8ugw" path="res://stone.gd" id="1_mob0d"]
+
+[node name="Stone" type="Node3D"]
+script = ExtResource("1_mob0d")

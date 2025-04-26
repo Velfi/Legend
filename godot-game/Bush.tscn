@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://du7ffofn2n61b"]
+
+[ext_resource type="Script" uid="uid://pf30vg38j6hy" path="res://bush.gd" id="1_afexm"]
+[ext_resource type="PackedScene" uid="uid://dml2ycna424d1" path="res://BushTop.glb" id="2_7kqnk"]
+[ext_resource type="PackedScene" uid="uid://b47gf302lw6x" path="res://BushBottom.glb" id="3_e82wu"]
+[ext_resource type="Script" uid="uid://byxvc1g7acmdo" path="res://hurtbox.gd" id="4_557jp"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6calk"]
+radius = 0.474009
+
+[node name="Bush" type="Node3D"]
+script = ExtResource("1_afexm")
+
+[node name="BushTop" parent="." instance=ExtResource("2_7kqnk")]
+unique_name_in_owner = true
+transform = Transform3D(0.459517, 0, 0, 0, 0.459517, 0, 0, 0, 0.459517, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.206962, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("SphereShape3D_6calk")
+
+[node name="BushBottom" parent="." instance=ExtResource("3_e82wu")]
+transform = Transform3D(0.459517, 0, 0, 0, 0.459517, 0, 0, 0, 0.459517, 0, 0, 0)
+
+[node name="Hurtbox" type="Area3D" parent="." groups=["Enemy"]]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.209187, 0)
+collision_layer = 8
+collision_mask = 16
+monitorable = false
+script = ExtResource("4_557jp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+shape = SubResource("SphereShape3D_6calk")
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_hit2"]
+[connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_hit"]

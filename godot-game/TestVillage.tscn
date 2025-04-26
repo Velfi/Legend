@@ -1,0 +1,1659 @@
+[gd_scene load_steps=36 format=3 uid="uid://dn0ft4nijve0v"]
+
+[ext_resource type="PackedScene" uid="uid://bgb1sd0iibt3q" path="res://Player.tscn" id="1_3esd3"]
+[ext_resource type="Material" uid="uid://cqruh8d8n01ls" path="res://sky.material" id="1_crt6e"]
+[ext_resource type="MeshLibrary" uid="uid://bb308exacbeqt" path="res://Models/Prototype.meshlib" id="1_mvemg"]
+[ext_resource type="MeshLibrary" uid="uid://cpfhs6m1gchq5" path="res://Tilesets/TerrainTiles.meshlib" id="2_1eejd"]
+[ext_resource type="Script" uid="uid://cy7xmdye3wa0p" path="res://target_camera.gd" id="2_sbftq"]
+[ext_resource type="Material" uid="uid://cgqjdpknlsyk6" path="res://player_soul.material" id="3_sgly4"]
+[ext_resource type="PackedScene" uid="uid://cgn806fhj6op3" path="res://Lever.tscn" id="4_jhniv"]
+[ext_resource type="Material" uid="uid://cfuvesau18hdu" path="res://player_body.material" id="4_u3yn0"]
+[ext_resource type="Script" uid="uid://bfls2ceujbt47" path="res://addons/zelda_scripts/scripts/interactables/interactable.gd" id="5_7e2ur"]
+[ext_resource type="PackedScene" uid="uid://bxn5a21sgvak1" path="res://GroundTile.tscn" id="5_22qwb"]
+[ext_resource type="Script" uid="uid://qok0xdw318w5" path="res://addons/zelda_scripts/scripts/providers/adhoc_tooltip_provider.gd" id="7_1eejd"]
+[ext_resource type="Script" uid="uid://bv0sfd3xw31s1" path="res://call_interact_handler_effect.gd" id="7_2yw5m"]
+[ext_resource type="Script" uid="uid://bmf82kw6iwfsi" path="res://debug_ui.gd" id="9_cctdn"]
+[ext_resource type="Theme" uid="uid://cdfxg26th7ijc" path="res://UI/Base.theme" id="12_arvfj"]
+[ext_resource type="PackedScene" uid="uid://ce8t54ak2njpk" path="res://PressurePad.tscn" id="14_oo17g"]
+[ext_resource type="PackedScene" uid="uid://bxsvyuj5lxtbe" path="res://Gate.tscn" id="15_1gywu"]
+[ext_resource type="PackedScene" uid="uid://du7ffofn2n61b" path="res://Bush.tscn" id="16_lfits"]
+[ext_resource type="PackedScene" uid="uid://r0h2nfda1ncd" path="res://Grass.tscn" id="17_ejrr6"]
+[ext_resource type="PackedScene" uid="uid://ubnpbsqkurr6" path="res://EnemyFrog.tscn" id="18_l2yp3"]
+[ext_resource type="PackedScene" uid="uid://yxxmn8ivjrh7" path="res://Spikes.tscn" id="19_5ursy"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_m7n00"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_5ubhn"]
+material = ExtResource("3_sgly4")
+size = Vector3(4, 4, 0.1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_21j0d"]
+points = PackedVector3Array(2, 2, 0.05, 2, 2, -0.05, -2, 2, 0.05, 2, -2, 0.05, 2, -2, -0.05, -2, 2, -0.05, -2, -2, 0.05, -2, -2, -0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nncyu"]
+material = ExtResource("4_u3yn0")
+size = Vector3(4, 4, 0.1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_iliqh"]
+points = PackedVector3Array(2, 2, 0.05, 2, 2, -0.05, -2, 2, 0.05, 2, -2, 0.05, 2, -2, -0.05, -2, 2, -0.05, -2, -2, 0.05, -2, -2, -0.05)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1eejd"]
+radius = 0.456713
+height = 1.3279
+
+[sub_resource type="Gradient" id="Gradient_g81ak"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.336066, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8e30u"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xs7ue"]
+height = 1024
+seamless = true
+color_ramp = SubResource("Gradient_g81ak")
+noise = SubResource("FastNoiseLite_8e30u")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cog1c"]
+sky_top_color = Color(0.34902, 0.572549, 0.701961, 1)
+sky_horizon_color = Color(0.384314, 0.454902, 0.54902, 1)
+sky_curve = 0.454715
+sky_cover = SubResource("NoiseTexture2D_xs7ue")
+
+[sub_resource type="Sky" id="Sky_hj37w"]
+sky_material = SubResource("ProceduralSkyMaterial_cog1c")
+
+[sub_resource type="Environment" id="Environment_pnsct"]
+background_mode = 2
+sky = SubResource("Sky_hj37w")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.7
+tonemap_white = 5.0
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+glow_enabled = true
+glow_intensity = 0.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arvfj"]
+draw_center = false
+border_width_left = 120
+border_width_top = 120
+border_width_right = 120
+border_width_bottom = 120
+border_color = Color(0.395831, 0.872812, 1, 1)
+border_blend = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_si1je"]
+size = Vector2(3, 100)
+center_offset = Vector3(1.5, 2.08165e-12, 2.08165e-12)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vxa53"]
+data = PackedVector3Array(3, 0, 50, 0, 0, 50, 3, 0, -50, 0, 0, 50, 0, 0, -50, 3, 0, -50)
+
+[node name="Game" type="Node3D"]
+
+[node name="Map" type="Node3D" parent="."]
+
+[node name="MapCell" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+
+[node name="StructureTiles" type="GridMap" parent="Map/MapCell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -1.5, 2.08165e-12)
+mesh_library = ExtResource("1_mvemg")
+physics_material = SubResource("PhysicsMaterial_m7n00")
+cell_size = Vector3(3, 3, 3)
+cell_scale = 3.0
+data = {
+"cells": PackedInt32Array(65535, 0, 1441792, 65534, 0, 1441792, 65533, 0, 1441792, 65533, 1, 1441792, 65533, 2, 1441799, 65534, 2, 1441792, 65534, 1, 1441792, 65535, 1, 1441792, 65535, 2, 7, 65533, 65535, 1441816, 65534, 65535, 1441816, 65533, 65534, 1441805, 65534, 65534, 1441805, 65533, 65533, 1441804, 65534, 65533, 1441804, 65535, 65535, 3, 65535, 65534, 2, 65532, 0, 655369, 65531, 0, 655369, 65530, 0, 655369, 65529, 0, 655369, 65528, 0, 1048577, 65532, 1, 655370, 65529, 1, 1048586, 65531, 1, 1048586, 65530, 1, 655370, 65532, 65535, 655376, 65531, 65535, 655376, 65530, 65535, 655376, 65529, 65535, 655376, 65528, 65535, 1048577, 65528, 1, 1048577, 2, 65530, 14, 3, 65530, 14, 4, 65530, 14, 4, 65531, 1441806, 4, 65532, 1441806, 4, 65533, 1441806, 2, 65531, 1048590, 2, 65532, 1048590, 2, 65533, 1048590, 3, 65533, 655374, 3, 65531, 655375, 3, 65532, 655375, 2, 65534, 655378, 4, 65534, 655378, 3, 65534, 655378, 3, 65535, 655378, 2, 65535, 1441812, 4, 65535, 1441812, 65524, 65529, 1048576, 65526, 65528, 1048576, 65524, 65528, 1048576, 65528, 65528, 1048576, 65528, 65529, 1048576, 65528, 65526, 1048576, 65527, 65526, 1048576, 65528, 65527, 1048576, 65526, 65526, 1048576, 65526, 65527, 1048576, 65524, 65527, 1048576, 65524, 65526, 1048576)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="SoulBarrier" type="MeshInstance3D" parent="Map/MapCell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.73908, 2, -18.5141)
+mesh = SubResource("BoxMesh_5ubhn")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Map/MapCell/SoulBarrier"]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/MapCell/SoulBarrier/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_21j0d")
+
+[node name="BodyBarrier" type="MeshInstance3D" parent="Map/MapCell"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.3661, 2, -19.9681)
+mesh = SubResource("BoxMesh_nncyu")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Map/MapCell/BodyBarrier"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/MapCell/BodyBarrier/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_iliqh")
+
+[node name="Lever" parent="Map/MapCell" instance=ExtResource("4_jhniv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.1391, 0, -23.7451)
+
+[node name="Interactable" type="Area3D" parent="Map/MapCell/Lever"]
+collision_layer = 32
+collision_mask = 32
+script = ExtResource("5_7e2ur")
+metadata/_custom_type_script = "uid://bfls2ceujbt47"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/MapCell/Lever/Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.292697, 0)
+shape = SubResource("CapsuleShape3D_1eejd")
+
+[node name="CallInteractHandlerEffect" type="Node" parent="Map/MapCell/Lever/Interactable" node_paths=PackedStringArray("target")]
+script = ExtResource("7_2yw5m")
+target = NodePath("../..")
+
+[node name="CallInteractHandlerEffect2" type="Node" parent="Map/MapCell/Lever/Interactable" node_paths=PackedStringArray("target")]
+script = ExtResource("7_2yw5m")
+target = NodePath("../../../../../Gate")
+
+[node name="Node" type="Node" parent="Map/MapCell/Lever/Interactable"]
+script = ExtResource("7_1eejd")
+tooltip_text = "Pull Lever"
+
+[node name="NorthIndicaator" type="Label3D" parent="Map/MapCell"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 7, 0.146822, 15)
+text = "⬆North⬆"
+font_size = 128
+
+[node name="GroundTile" parent="Map/MapCell" instance=ExtResource("5_22qwb")]
+east_wall = false
+
+[node name="MapCell2" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 2.08165e-12)
+
+[node name="GroundTile" parent="Map/MapCell2" instance=ExtResource("5_22qwb")]
+west_wall = false
+
+[node name="LandTiles" type="GridMap" parent="Map/MapCell2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.95, 0)
+mesh_library = ExtResource("2_1eejd")
+cell_size = Vector3(3, 2, 3)
+data = {
+"cells": PackedInt32Array(65535, 65535, 1441799, 65535, 0, 655361, 65535, 1, 655361, 65535, 2, 7, 0, 0, 5, 65537, 0, 4, 65537, 1, 1, 65536, 1, 8, 65536, 65535, 1441799, 65537, 65535, 1441793, 65538, 65535, 1441793, 65538, 0, 1441793, 65538, 1, 1441793, 65537, 2, 7, 65538, 2, 1441793, 65539, 2, 1048583, 65539, 1, 1441793, 65539, 0, 1441793, 65539, 65535, 655367, 65536, 4, 1441799, 65536, 6, 8, 65537, 4, 1441793, 65537, 5, 1048577, 65537, 6, 1, 65537, 7, 1048577, 65538, 4, 1441793, 65538, 5, 1441793, 65538, 6, 1441793, 65538, 7, 1441793, 65539, 4, 655367, 65539, 5, 1441793, 65539, 6, 1441793, 65539, 7, 1048583, 65536, 5, 1048577, 65537, 8, 1048577, 65537, 9, 1048577, 65536, 9, 1048577, 131071, 9, 1048577, 65536, 8, 1441800, 65538, 8, 1048584, 131070, 9, 6, 1, 10, 9, 0, 10, 1048586, 0, 11, 1441802, 65535, 11, 655370, 65535, 10, 10, 65534, 10, 655363, 65533, 9, 1048579, 65533, 10, 655370, 65533, 8, 1048579, 65533, 7, 1048579, 65533, 6, 1048579, 65533, 5, 1048579, 65533, 4, 1048579, 65534, 3, 3, 65533, 3, 1048586, 65535, 3, 1441802)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="MapCell3" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell3" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell4" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell4" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell5" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell5" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell6" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell6" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell7" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell7" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell8" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell8" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell9" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell9" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell10" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell10" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell11" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell11" instance=ExtResource("5_22qwb")]
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell12" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 2.08165e-12)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell12" instance=ExtResource("5_22qwb")]
+south_wall = false
+west_wall = false
+
+[node name="MapCell13" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell13" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell14" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell14" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell15" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell15" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell16" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell16" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell17" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell17" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell18" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell18" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell19" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell19" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell20" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell20" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell21" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell21" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell22" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell22" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell23" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell23" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell24" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 100)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell24" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell25" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell25" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell26" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell26" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell27" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell27" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell28" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell28" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell29" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell29" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell30" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell30" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell31" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell31" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell32" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell32" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell33" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell33" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell34" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell34" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell35" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell35" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell36" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 200)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell36" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell37" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell37" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell38" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell38" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell39" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell39" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell40" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell40" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell41" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell41" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell42" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell42" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell43" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell43" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell44" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell44" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell45" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell45" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell46" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell46" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell47" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell47" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell48" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 300)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell48" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell49" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell49" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell50" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell50" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell51" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell51" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell52" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell52" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell53" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell53" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell54" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell54" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell55" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell55" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell56" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell56" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell57" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell57" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell58" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell58" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell59" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell59" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell60" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 400)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell60" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell61" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell61" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell62" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell62" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell63" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell63" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell64" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell64" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell65" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell65" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell66" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell66" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell67" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell67" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell68" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell68" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell69" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell69" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell70" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell70" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell71" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell71" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell72" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 500)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell72" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell73" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell73" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell74" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell74" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell75" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell75" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell76" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell76" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell77" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell77" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell78" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell78" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell79" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell79" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell80" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell80" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell81" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell81" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell82" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell82" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell83" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell83" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell84" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 600)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell84" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell85" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell85" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell86" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell86" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell87" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell87" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell88" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell88" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell89" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell89" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell90" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell90" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell91" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell91" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell92" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell92" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell93" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell93" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell94" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell94" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell95" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell95" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell96" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 700)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell96" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell97" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell97" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+
+[node name="MapCell98" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell98" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell99" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell99" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell100" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell100" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell101" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell101" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell102" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell102" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell103" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell103" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell104" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell104" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell105" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell105" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell106" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell106" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell107" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell107" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell108" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 800)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell108" instance=ExtResource("5_22qwb")]
+north_wall = false
+south_wall = false
+west_wall = false
+
+[node name="MapCell109" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell109" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+
+[node name="MapCell110" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell110" instance=ExtResource("5_22qwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.08165e-12, 0)
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell111" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell111" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell112" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell112" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell113" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 400, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell113" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell114" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell114" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell115" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell115" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell116" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell116" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell117" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell117" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell118" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell118" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell119" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell119" instance=ExtResource("5_22qwb")]
+north_wall = false
+east_wall = false
+west_wall = false
+
+[node name="MapCell120" type="Node3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1100, 2.08165e-12, 900)
+visible = false
+
+[node name="GroundTile" parent="Map/MapCell120" instance=ExtResource("5_22qwb")]
+north_wall = false
+west_wall = false
+
+[node name="Characters" type="Node3D" parent="."]
+
+[node name="Player" parent="Characters" instance=ExtResource("1_3esd3")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95.6768, 0.00217199, -1.24332)
+
+[node name="CameraTarget" type="Marker3D" parent="Characters/Player"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.25, 2.08165e-12)
+
+[node name="TargetCamera" type="Node3D" parent="."]
+script = ExtResource("2_sbftq")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="TargetCamera"]
+transform = Transform3D(1, -6.39635e-16, 1.92508e-16, 1.92508e-16, 0.551937, 0.833886, -6.39635e-16, -0.833886, 0.551937, 0, 0, 0)
+spring_length = 3.0
+
+[node name="Camera3D" type="Camera3D" parent="TargetCamera/SpringArm3D"]
+transform = Transform3D(1, -5.3104e-14, -2.37691e-14, 4.70199e-15, 1, 8.94269e-08, -3.76196e-16, -9.86741e-08, 1, 2.09229e-12, 1.35673e-07, 5.3)
+fov = 90.0
+far = 200.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pnsct")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -540.0
+offset_right = 960.0
+offset_bottom = 540.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("12_arvfj")
+script = ExtResource("9_cctdn")
+
+[node name="SoulformBorder" type="PanelContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_arvfj")
+metadata/_edit_use_anchors_ = true
+
+[node name="NorthWall" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, -3.51437e-21, 4.37114e-08, 1, -4.37114e-08, 2.08165e-12, 2.08165e-12, -50)
+mesh = SubResource("PlaneMesh_si1je")
+surface_material_override/0 = ExtResource("1_crt6e")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NorthWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NorthWall/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_vxa53")
+
+[node name="PressurePad" parent="." instance=ExtResource("14_oo17g")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.1434, -0.0964303, -12.9598)
+
+[node name="Gate" parent="." instance=ExtResource("15_1gywu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.5291, 0.138275, -22.0258)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.4, 0, 0, 0, 1, -25.0403, -0.427224, -11.2915)
+use_collision = true
+radius = 2.0
+
+[node name="Bushes" type="Node3D" parent="."]
+
+[node name="Bush" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8227, 0.0100017, -22.1191)
+
+[node name="Bush2" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8227, 0.0100017, -22.1191)
+
+[node name="Bush3" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8227, 0.0100017, -22.1191)
+
+[node name="Bush4" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8227, 0.0100017, -22.1191)
+
+[node name="Bush5" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8219, 0.00722646, -22.1098)
+
+[node name="Bush6" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8227, 0.0100017, -21.1191)
+
+[node name="Bush7" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8227, 0.0100017, -21.1191)
+
+[node name="Bush8" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8227, 0.0100017, -21.1191)
+
+[node name="Bush9" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8227, 0.0100017, -21.1191)
+
+[node name="Bush10" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8219, 0.00722646, -21.1098)
+
+[node name="Bush11" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8227, 0.0100017, -20.1191)
+
+[node name="Bush12" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8227, 0.0100017, -20.1191)
+
+[node name="Bush13" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8227, 0.0100017, -20.1191)
+
+[node name="Bush14" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8227, 0.0100017, -20.1191)
+
+[node name="Bush15" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8219, 0.00722646, -20.1098)
+
+[node name="Bush16" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8227, 0.0100017, -19.1191)
+
+[node name="Bush17" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8227, 0.0100017, -19.1191)
+
+[node name="Bush18" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8227, 0.0100017, -19.1191)
+
+[node name="Bush19" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8227, 0.0100017, -19.1191)
+
+[node name="Bush20" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8219, 0.00722646, -19.1098)
+
+[node name="Bush21" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8227, 0.0100017, -18.1191)
+
+[node name="Bush22" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8227, 0.0100017, -18.1191)
+
+[node name="Bush23" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.8227, 0.0100017, -18.1191)
+
+[node name="Bush24" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8227, 0.0100017, -18.1191)
+
+[node name="Bush25" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8219, 0.00722646, -18.1098)
+
+[node name="Bush26" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8227, 0.0100017, -22.1191)
+
+[node name="Bush27" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8227, 0.0100017, -22.1191)
+
+[node name="Bush28" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8227, 0.0100017, -22.1191)
+
+[node name="Bush29" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.8227, 0.0100017, -22.1191)
+
+[node name="Bush30" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.82187, 0.00722646, -22.1098)
+
+[node name="Bush31" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8227, 0.0100017, -21.1191)
+
+[node name="Bush32" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8227, 0.0100017, -21.1191)
+
+[node name="Bush33" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8227, 0.0100017, -21.1191)
+
+[node name="Bush34" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.8227, 0.0100017, -21.1191)
+
+[node name="Bush35" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.82187, 0.00722646, -21.1098)
+
+[node name="Bush36" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8227, 0.0100017, -20.1191)
+
+[node name="Bush37" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8227, 0.0100017, -20.1191)
+
+[node name="Bush38" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8227, 0.0100017, -20.1191)
+
+[node name="Bush39" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.8227, 0.0100017, -20.1191)
+
+[node name="Bush40" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.82187, 0.00722646, -20.1098)
+
+[node name="Bush41" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8227, 0.0100017, -19.1191)
+
+[node name="Bush42" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8227, 0.0100017, -19.1191)
+
+[node name="Bush43" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8227, 0.0100017, -19.1191)
+
+[node name="Bush44" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.8227, 0.0100017, -19.1191)
+
+[node name="Bush45" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.82187, 0.00722646, -19.1098)
+
+[node name="Bush46" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8227, 0.0100017, -18.1191)
+
+[node name="Bush47" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8227, 0.0100017, -18.1191)
+
+[node name="Bush48" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8227, 0.0100017, -18.1191)
+
+[node name="Bush49" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.8227, 0.0100017, -18.1191)
+
+[node name="Bush50" parent="Bushes" instance=ExtResource("16_lfits")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.82187, 0.00722646, -18.1098)
+
+[node name="Grasses" type="Node3D" parent="."]
+
+[node name="Grass" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7579, 0.0100059, -16.312)
+
+[node name="Grass2" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.7579, 0.0100059, -16.312)
+
+[node name="Grass3" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.7579, 0.0100059, -16.312)
+
+[node name="Grass4" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7579, 0.0100059, -16.312)
+
+[node name="Grass5" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.7579, 0.0100059, -16.312)
+
+[node name="Grass6" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.7579, 0.0100059, -16.312)
+
+[node name="Grass7" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7579, 0.0100059, -16.312)
+
+[node name="Grass8" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7579, 0.0100059, -16.312)
+
+[node name="Grass9" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7579, 0.0100059, -16.312)
+
+[node name="Grass10" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.75787, 0.0100059, -16.312)
+
+[node name="Grass11" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7579, 0.0100059, -15.312)
+
+[node name="Grass12" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.7579, 0.0100059, -15.312)
+
+[node name="Grass13" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.7579, 0.0100059, -15.312)
+
+[node name="Grass14" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7579, 0.0100059, -15.312)
+
+[node name="Grass15" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.7579, 0.0100059, -15.312)
+
+[node name="Grass16" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.7579, 0.0100059, -15.312)
+
+[node name="Grass17" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7579, 0.0100059, -15.312)
+
+[node name="Grass18" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7579, 0.0100059, -15.312)
+
+[node name="Grass19" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7579, 0.0100059, -15.312)
+
+[node name="Grass20" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.75787, 0.0100059, -15.312)
+
+[node name="Grass21" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7579, 0.0100059, -14.312)
+
+[node name="Grass22" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.7579, 0.0100059, -14.312)
+
+[node name="Grass23" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.7579, 0.0100059, -14.312)
+
+[node name="Grass24" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.7579, 0.0100059, -14.312)
+
+[node name="Grass25" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.7579, 0.0100059, -14.312)
+
+[node name="Grass26" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.7579, 0.0100059, -14.312)
+
+[node name="Grass27" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7579, 0.0100059, -14.312)
+
+[node name="Grass28" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7579, 0.0100059, -14.312)
+
+[node name="Grass29" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.7579, 0.0100059, -14.312)
+
+[node name="Grass30" parent="Grasses" instance=ExtResource("17_ejrr6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.75787, 0.0100059, -14.312)
+
+[node name="Spikes" parent="." instance=ExtResource("19_5ursy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.5046, 0.0100036, -10.5085)
+
+[node name="EnemyFrog" parent="." instance=ExtResource("18_l2yp3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9173, 0.0100031, -9.76811)
+
+[connection signal="on_activate" from="PressurePad" to="Gate" method="_on_activate"]
+[connection signal="on_deactivate" from="PressurePad" to="Gate" method="_on_deactivate"]

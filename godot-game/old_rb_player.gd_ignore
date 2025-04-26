@@ -1,0 +1,118 @@
+extends RigidBody3D
+class_name Player
+
+signal toggle_soul_form
+
+@export
+var speed = 10
+@export
+var accel = 1000
+
+var _rb = self
+var _gravitationalForce: Vector3
+var _rayDir: Vector3 = Vector3.DOWN
+var _previousVelocity: Vector3 = Vector3.ZERO
+var _moveContext: Vector2
+
+@export var _rideHeight = 20
+@export var _rayToGroundLength = 3 # rayToGroundLength: max distance of raycast to ground (Note, this should be greater than the rideHeight).
+@export var _rideSpringStrength = 50
+@export var _rideSpringDamper = 5
+
+var _moveInput: Vector3
+var _speedFactor = 1
+var _maxAccelForceFactor = 1
+var _m_GoalVel = Vector3.ZERO
+
+var _maxSpeed: float = 8
+var _acceleration: float = 200
+var _maxAccelForce: float = 150
+var _leanFactor: float = 0.25
+var _accelerationFactorFromDot: Curve
+var _maxAccelerationForceFactorFromDot: Curve
+var _moveForceScale: Vector3 = Vector3(1, 0, 1)
+
+var _shouldMaintainHeight = true
+var _is_in_soul_form = false
+
+func _ready() -> void:
+	%AnimationTree.active = true
+	toggle_soul_form.connect(_toggle_soul_form)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_soul_form") and not event.is_echo():
+		toggle_soul_form.emit()
+	if event.is_action_pressed("ui_accept") and not event.is_echo():
+		pass
+
+func _physics_process(delta: float) -> void:
+	var direction = Vector3(
+		Input.get_axis("ui_left", "ui_right"),
+		0.0,
+		Input.get_axis("ui_up", "ui_down")
+	).normalized()
+	%AnimationTree["parameters/blend_position"] = linear_velocity.length() / 2.9
+	var delta_v = linear_velocity.lerp(direction * speed, accel * delta)
+	apply_central_force(delta_v)
+
+	if %FloorRay.is_colliding():
+		print("FloorRay is colliding")
+		var hit_body = %FloorRay.get_collider()
+		var other_vel = Vector3.ZERO
+
+		if hit_body != null and hit_body.has_method("linear_velocity"):
+			other_vel = hit_body.linear_velocity()
+			# print("Other velocity: ", other_vel)
+		
+		var ray_dir_vel = Vector3.DOWN.dot(linear_velocity)
+		# print("Ray direction velocity: ", ray_dir_vel)
+		var other_dir_vel = Vector3.DOWN.dot(other_vel)
+		# print("Other direction velocity: ", other_dir_vel)
+		var rel_vel = ray_dir_vel - other_dir_vel
+		# print("Relative velocity: ", rel_vel)
+
+		var x = position.distance_to( %FloorRay.get_collision_point()) - _rideHeight
+		# print("Distance to floor: ", x)
+		var spring_force = (x * _rideSpringStrength) - (rel_vel * _rideSpringDamper)
+		
+		# Uncomment the next line for debugging
+		# draw_line(transform.origin, transform.origin + (rayDir * springForce), Color(1, 1, 0))
+		
+		apply_central_force(Vector3.DOWN * spring_force)
+		print("Spring force: ", spring_force * Vector3.DOWN)
+		
+		# if hit_body != null:
+		# 	hit_body.apply_force(Vector3.DOWN * - spring_force, _ray_hit.position)
+
+	# If we're moving, rotate in that direction.
+	var velocity_sans_y = linear_velocity * Vector3(1, 0, 1)
+	if not is_zero_approx(velocity_sans_y.length_squared()):
+		%Model.look_at(global_transform.origin + velocity_sans_y.rotated(Vector3.UP, deg_to_rad(90)), Vector3.UP)
+
+func _toggle_soul_form():
+	_is_in_soul_form = !_is_in_soul_form
+	
+	if _is_in_soul_form:
+		_set_soul_form()
+	else:
+		_set_body_form()
+
+func _set_soul_form():
+	%BodyMarker.visible = true
+	%BodyMarker.global_position = self.global_position
+	self.collision_layer = 0b0101
+	self.collision_mask = 0b0101
+	for mesh in find_children("*", "MeshInstance3D"):
+		mesh.mesh.material = preload ("res://player_soul.material")
+
+func _set_body_form():
+	%BodyMarker.visible = false
+	PhysicsServer3D.body_set_state(
+		get_rid(),
+		PhysicsServer3D.BODY_STATE_TRANSFORM,
+		Transform3D.IDENTITY.translated( %BodyMarker.global_position)
+	)
+	self.collision_layer = 0b0011
+	self.collision_mask = 0b0011
+	for mesh in find_children("*", "MeshInstance3D"):
+		mesh.mesh.material = preload ("res://player_body.material")

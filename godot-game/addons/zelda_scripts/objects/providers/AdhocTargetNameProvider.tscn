@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1kprea1awo7g"]
+
+[sub_resource type="Resource" id="Resource_qe7xp"]
+metadata/__load_path__ = "res://scripts/providers/adhoc_target_name_provider.gd"
+
+[node name="AdhocTargetNameProvider" type="Node"]
+script = SubResource("Resource_qe7xp")

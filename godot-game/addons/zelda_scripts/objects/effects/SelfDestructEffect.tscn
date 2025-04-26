@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://d03onkfxj28a4"]
+
+[sub_resource type="Resource" id="Resource_wsiym"]
+metadata/__load_path__ = "res://scripts/effects/self_destruct_effect.gd"
+
+[node name="SelfDestructEffect" type="Node" groups=["Effects"]]
+script = SubResource("Resource_wsiym")

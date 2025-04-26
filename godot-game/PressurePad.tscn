@@ -1,0 +1,82 @@
+[gd_scene load_steps=9 format=3 uid="uid://ce8t54ak2njpk"]
+
+[ext_resource type="Script" uid="uid://cpfpgq0tke7jv" path="res://pressure_pad.gd" id="1_vjxw3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xgyea"]
+diffuse_mode = 3
+albedo_color = Color(1, 0.45, 0.45, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8hq76"]
+material = SubResource("StandardMaterial3D_xgyea")
+size = Vector3(0.9, 0.05, 0.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8remo"]
+size = Vector3(0.9, 0.05, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_34rh8"]
+diffuse_mode = 3
+albedo_color = Color(0.55, 0.55, 0.55, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ytifs"]
+material = SubResource("StandardMaterial3D_34rh8")
+size = Vector3(1, 0.15, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_g44x0"]
+size = Vector3(1, 0.15, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_4d2fk"]
+points = PackedVector3Array(0, 0, 0, 0.5, 0, 0, 0, 0.16, 0, 0, 0, 1, 0.5, 0, 1, 0, 0.16, 1)
+
+[node name="PressurePad" type="Node3D"]
+script = ExtResource("1_vjxw3")
+
+[node name="Top" type="RigidBody3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.175156, 2.08165e-12)
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+can_sleep = false
+constant_force = Vector3(2.08165e-12, 40, 2.08165e-12)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Top"]
+mesh = SubResource("BoxMesh_8hq76")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Top"]
+shape = SubResource("BoxShape3D_8remo")
+
+[node name="Bottom" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.075, 2.08165e-12)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Bottom"]
+mesh = SubResource("BoxMesh_ytifs")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bottom"]
+shape = SubResource("BoxShape3D_g44x0")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Bottom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.499972, -0.074048, -0.499723)
+shape = SubResource("ConvexPolygonShape3D_4d2fk")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Bottom"]
+transform = Transform3D(0.00509637, 0, 0.999987, 0, 1, 0, -0.999987, 0, 0.00509637, -0.499327, -0.0740479, -0.498419)
+shape = SubResource("ConvexPolygonShape3D_4d2fk")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Bottom"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.500111, -0.074048, 0.502167)
+shape = SubResource("ConvexPolygonShape3D_4d2fk")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Bottom"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -0.500028, -0.074048, 0.500277)
+shape = SubResource("ConvexPolygonShape3D_4d2fk")
+
+[node name="SliderJoint3D" type="SliderJoint3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.08165e-12, 0.15, 2.08165e-12)
+node_a = NodePath("../Bottom")
+node_b = NodePath("../Top")
+linear_limit/upper_distance = 0.1
+linear_limit/lower_distance = 2.13163e-14

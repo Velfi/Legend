@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://yxxmn8ivjrh7"]
+
+[ext_resource type="Script" uid="uid://cw32qglyuy0eu" path="res://hitbox.gd" id="1_kfn7r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1edfn"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ssuel"]
+height = 1.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_sy7fq"]
+height = 0.9
+radius = 0.4
+
+[node name="Spikes" type="Node3D"]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+height = 1.0
+material = SubResource("StandardMaterial3D_1edfn")
+
+[node name="Hitbox" type="Area3D" parent="." groups=["DangerousObject"]]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_kfn7r")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500611, 0)
+shape = SubResource("CylinderShape3D_ssuel")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.500611, 0)
+shape = SubResource("CylinderShape3D_sy7fq")

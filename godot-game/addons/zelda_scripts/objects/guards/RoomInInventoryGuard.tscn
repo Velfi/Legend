@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://gpusln6ljyqs"]
+
+[sub_resource type="Resource" id="Resource_322og"]
+metadata/__load_path__ = "res://scripts/guards/room_in_inventory_guard.gd"
+
+[node name="RoomInInventoryGuard" type="Node3D"]
+script = SubResource("Resource_322og")

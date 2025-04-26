@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmlpnahmp42hi"]
+
+[ext_resource type="PackedScene" uid="uid://bt6di2dwbkh5m" path="res://Models/IslandModel.tscn" id="1_1knqg"]
+[ext_resource type="PackedScene" uid="uid://bgb1sd0iibt3q" path="res://Player.tscn" id="2_57f08"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cg221"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_l3cn2"]
+sky_material = SubResource("ProceduralSkyMaterial_cg221")
+
+[sub_resource type="Environment" id="Environment_xqn6o"]
+background_mode = 2
+sky = SubResource("Sky_l3cn2")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="TestIsland" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xqn6o")
+
+[node name="IslandModel" parent="." instance=ExtResource("1_1knqg")]
+
+[node name="Player" parent="." instance=ExtResource("2_57f08")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 315.026, 339.193, 236.652)
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.16, 7.68182, 17.6297)

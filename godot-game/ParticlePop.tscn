@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://cnu1dmbk42jmt"]
+
+[ext_resource type="Texture2D" uid="uid://cgdgexnvda16l" path="res://Blam.png" id="1_w0orw"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w8s35"]
+lifetime_randomness = 0.17
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3u5yp"]
+transparency = 1
+diffuse_mode = 3
+albedo_texture = ExtResource("1_w0orw")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_qrbir"]
+material = SubResource("StandardMaterial3D_3u5yp")
+size = Vector2(0.1, 0.1)
+
+[node name="ParticlePop" type="Node3D"]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+explosiveness = 0.53
+randomness = 0.34
+process_material = SubResource("ParticleProcessMaterial_w8s35")
+draw_pass_1 = SubResource("PlaneMesh_qrbir")

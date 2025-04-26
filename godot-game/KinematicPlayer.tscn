@@ -1,0 +1,280 @@
+[gd_scene load_steps=22 format=3 uid="uid://dgcxewheji5em"]
+
+[ext_resource type="Material" uid="uid://cfuvesau18hdu" path="res://player_body.material" id="1_s36mf"]
+[ext_resource type="Texture2D" uid="uid://bcuugwgdk4uao" path="res://body.png" id="2_04blk"]
+
+[sub_resource type="Resource" id="Resource_etavh"]
+metadata/__load_path__ = "res://kinematic_player.gd"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ss5bm"]
+height = 0.91731
+radius = 0.761679
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tfrtv"]
+radius = 0.3
+height = 1.6
+
+[sub_resource type="Curve3D" id="Curve3D_ig2uf"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -0.310404, 0.180509, 2.08165e-12, 0, 0, 0, 0, 0, 0, -0.247435, 0.0269675, 2.08165e-12, 0, 0, 0, 0, 0, 0, -0.0776661, 0.0115824, 2.08165e-12, 0, 0, 0, 0, 0, 0, 0.488802, 0.265284, 2.08165e-12, 0, 0, 0, 0, 0, 0, 0.44399, 0.106592, 0, 0, 0, 0, 0, 0, 0, 0.240823, 0.0264799, 0, 0, 0, 0, 0, 0, 0, -0.309546, 0.182426, 0),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 7
+
+[sub_resource type="SphereMesh" id="SphereMesh_6i5wl"]
+material = ExtResource("1_s36mf")
+radius = 0.1
+height = 0.2
+radial_segments = 4
+rings = 1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lmru4"]
+radius = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kgmnl"]
+radius = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_w7c4a"]
+material = ExtResource("1_s36mf")
+radius = 0.15
+height = 0.4
+radial_segments = 4
+rings = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_fpggg"]
+material = ExtResource("1_s36mf")
+radius = 0.3
+height = 0.6
+radial_segments = 6
+rings = 2
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8qfbf"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vsd2n"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3i50g"]
+animation = &"Walking"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q3ejp"]
+animation = &"Running"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_ksqdc"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_8qfbf")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_vsd2n")
+blend_point_1/pos = 0.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_3i50g")
+blend_point_2/pos = 1.0
+blend_point_3/node = SubResource("AnimationNodeAnimation_q3ejp")
+blend_point_3/pos = 2.0
+min_space = 0.0
+max_space = 2.0
+
+[sub_resource type="Animation" id="Animation_n1dov"]
+resource_name = "RESET"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model/Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model/Path3D/PathFollow3D2:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_ty46e"]
+resource_name = "Running"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model/Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.2331, 0.7326),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model/Path3D/PathFollow3D2:progress_ratio")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_pof7b"]
+resource_name = "Walking"
+length = 1.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model/Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.3996, 1.2321),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model/Path3D/PathFollow3D2:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7992),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_wdd5h"]
+resource_name = "idle"
+length = 0.927
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model/Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2997, 0.4995),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.14, 0.222, 0.299]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model/Path3D/PathFollow3D2:progress_ratio")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2997, 0.4995),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.3031, 0.2206, 0.1404]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bse85"]
+_data = {
+&"RESET": SubResource("Animation_n1dov"),
+&"Running": SubResource("Animation_ty46e"),
+&"Walking": SubResource("Animation_pof7b"),
+&"idle": SubResource("Animation_wdd5h")
+}
+
+[node name="KinematicPlayer" type="CharacterBody3D"]
+script = SubResource("Resource_etavh")
+speed = null
+accel = null
+
+[node name="Interactor" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 1.12238e-23, 0, 1.12238e-23, 1, 0, 0.797787, 8.9542e-24)
+collision_layer = 32
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactor"]
+shape = SubResource("CylinderShape3D_ss5bm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, -1.21652e-31, 0, -1.21652e-31, 1, 0, 0, 0, 1, -9.70523e-32, 0.797787, 0)
+shape = SubResource("CapsuleShape3D_tfrtv")
+
+[node name="Model" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08137e-12, 0.797787, 2.08193e-12)
+
+[node name="Path3D" type="Path3D" parent="Model"]
+transform = Transform3D(1, -3.48787e-16, 1.08947e-14, 3.48787e-16, 1, -3.48787e-16, -2.36534e-16, 3.48787e-16, 1, -8.1532e-17, -0.116867, 8.1532e-17)
+curve = SubResource("Curve3D_ig2uf")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Model/Path3D"]
+transform = Transform3D(4.93692e-08, 0.925067, -0.37938, -5.96046e-08, 0.37938, 0.925067, 1, -2.3057e-08, 7.3868e-08, -0.310404, 0.180509, 2.08165e-12)
+
+[node name="RightHand" type="Area3D" parent="Model/Path3D/PathFollow3D"]
+transform = Transform3D(1, -8.88178e-16, 0, 0, 1, -4.43563e-10, 3.55271e-15, -1.27979e-09, 1, 0.43, 2.08165e-12, 2.08165e-12)
+monitoring = false
+monitorable = false
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model/Path3D/PathFollow3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+mesh = SubResource("SphereMesh_6i5wl")
+skeleton = NodePath("../../../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model/Path3D/PathFollow3D/RightHand"]
+shape = SubResource("SphereShape3D_lmru4")
+
+[node name="PathFollow3D2" type="PathFollow3D" parent="Model/Path3D"]
+transform = Transform3D(4.93692e-08, 0.925064, -0.379378, -5.96046e-08, 0.379378, 0.925064, 1, -2.3057e-08, 7.38677e-08, -0.310404, 0.180509, 2.08165e-12)
+
+[node name="LeftHand" type="Area3D" parent="Model/Path3D/PathFollow3D2"]
+transform = Transform3D(1, 0, 0, 1.04225e-14, 1, -1.58724e-09, 7.73595e-15, -1.6808e-09, 1, -0.43, 2.08165e-12, 2.08165e-12)
+monitoring = false
+monitorable = false
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Model/Path3D/PathFollow3D2/LeftHand"]
+mesh = SubResource("SphereMesh_6i5wl")
+skeleton = NodePath("../../../../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Model/Path3D/PathFollow3D2/LeftHand"]
+shape = SubResource("SphereShape3D_kgmnl")
+
+[node name="Head" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 7.4959e-24, 2.36529e-16, -2.19254e-22, 1, 1.88762e-22, -2.36534e-16, -1.96806e-22, 1, -0.0220452, 0.597193, -9.63627e-10)
+mesh = SubResource("SphereMesh_w7c4a")
+
+[node name="Chest" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 7.4959e-24, 2.36529e-16, -4.31012e-22, 1, 4.0052e-22, -2.36534e-16, -4.08565e-22, 1, -0.0220452, 0.132401, -9.63626e-10)
+mesh = SubResource("SphereMesh_fpggg")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+unique_name_in_owner = true
+active = false
+root_node = NodePath("%AnimationTree/..")
+tree_root = SubResource("AnimationNodeBlendSpace1D_ksqdc")
+anim_player = NodePath("../AnimationPlayer")
+parameters/blend_position = 2.08165e-12
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bse85")
+}
+
+[node name="BodyMarker" type="Sprite3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(-8.74228e-08, -2, -8.74228e-08, 0, -8.74228e-08, 2, -2, 8.74228e-08, 3.82137e-15, 2.08165e-12, 0.03, 2.08165e-12)
+top_level = true
+visible = false
+modulate = Color(1, 0.513726, 0.321569, 1)
+texture_filter = 0
+texture = ExtResource("2_04blk")

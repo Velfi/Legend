@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbmwc8jskor2g"]
+
+[sub_resource type="Resource" id="Resource_gheaa"]
+metadata/__load_path__ = "res://scripts/guards/not_animating_guard.gd"
+
+[node name="NotAnimatingGuard" type="Node3D" groups=["Guards"]]
+script = SubResource("Resource_gheaa")

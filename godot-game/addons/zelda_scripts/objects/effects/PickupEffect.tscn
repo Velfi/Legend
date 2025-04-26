@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c21vt6qhh53go"]
+
+[sub_resource type="Resource" id="Resource_4j54i"]
+metadata/__load_path__ = "res://scripts/effects/pickup_effect.gd"
+
+[node name="PickupEffect" type="Node" groups=["Effects"]]
+script = SubResource("Resource_4j54i")

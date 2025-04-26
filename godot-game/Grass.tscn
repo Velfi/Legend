@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://r0h2nfda1ncd"]
+
+[ext_resource type="Script" uid="uid://c8qyvnylhipt5" path="res://grass.gd" id="1_57toa"]
+[ext_resource type="PackedScene" uid="uid://duymdya52vw0w" path="res://Grass.glb" id="2_y07na"]
+[ext_resource type="PackedScene" uid="uid://blg3ia35755ad" path="res://GrassCut.glb" id="3_6wtow"]
+[ext_resource type="Script" uid="uid://byxvc1g7acmdo" path="res://hurtbox.gd" id="4_v28te"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w5ass"]
+
+[node name="Grass" type="Node3D"]
+script = ExtResource("1_57toa")
+
+[node name="GrassTop" parent="." instance=ExtResource("2_y07na")]
+unique_name_in_owner = true
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="GrassBottom" parent="." instance=ExtResource("3_6wtow")]
+unique_name_in_owner = true
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
+
+[node name="Hurtbox" type="Area3D" parent="." groups=["Enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.310704, 0)
+collision_layer = 8
+collision_mask = 16
+monitorable = false
+script = ExtResource("4_v28te")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.189847, 0)
+shape = SubResource("BoxShape3D_w5ass")

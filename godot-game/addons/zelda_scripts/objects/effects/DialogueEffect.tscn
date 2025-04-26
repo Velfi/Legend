@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://n588uiobq2d3"]
+
+[sub_resource type="Resource" id="Resource_42nsk"]
+metadata/__load_path__ = "res://scripts/effects/dialogue_effect.gd"
+
+[sub_resource type="Resource" id="Resource_1yuxf"]
+metadata/__load_path__ = "res://addons/dialogue_manager/example_balloon/example_balloon.tscn"
+
+[sub_resource type="Resource" id="Resource_1s34c"]
+metadata/__load_path__ = "res://dialog/intro.dialogue"
+
+[node name="DialogueEffect" type="Node" groups=["Effects"]]
+process_mode = 3
+script = SubResource("Resource_42nsk")
+Balloon = SubResource("Resource_1yuxf")
+dialogue_resource = SubResource("Resource_1s34c")

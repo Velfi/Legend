@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnc5j45n6u44s"]
+
+[sub_resource type="Resource" id="Resource_mtnsv"]
+metadata/__load_path__ = "res://scripts/effects/dialogic_effect.gd"
+
+[node name="DialogicEffect" type="Node" groups=["Effects"]]
+script = SubResource("Resource_mtnsv")

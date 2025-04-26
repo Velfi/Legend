@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxsvyuj5lxtbe"]
+
+[ext_resource type="Script" uid="uid://becg0jwhhdr43" path="res://gate.gd" id="1_k2jlm"]
+[ext_resource type="AudioStream" uid="uid://kn54trkgm12y" path="res://Sounds/flutter-01.ogg" id="2_k5vem"]
+
+[node name="Gate" type="Node3D"]
+script = ExtResource("1_k2jlm")
+
+[node name="Frame" type="CSGBox3D" parent="."]
+transform = Transform3D(0.999999, 0.00106795, 0.000272497, -0.001068, 0.999999, 0.000181362, -0.000272312, -0.00018164, 1, -0.00730896, 1.25, 0.000976562)
+calculate_tangents = false
+use_collision = true
+size = Vector3(4, 2.5, 1)
+
+[node name="InnerFrame" type="CSGBox3D" parent="Frame"]
+transform = Transform3D(1.00002, -1.5234e-11, 1.94996e-09, -1.37464e-08, 1, 4.1764e-09, 8.73115e-10, -4.07454e-10, 1, 4.71007e-05, 0.0558987, -7.99773e-06)
+operation = 2
+size = Vector3(2.25, 2.66781, 1.05496)
+
+[node name="Door" type="CSGBox3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25706, 0)
+calculate_tangents = false
+use_collision = true
+size = Vector3(2.22559, 2.1604, 0.246338)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61606, 4.29188)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("2_k5vem")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://csvhvqdgxvjql"]
+
+[sub_resource type="Resource" id="Resource_rmm16"]
+metadata/__load_path__ = "res://scripts/interactables/interactable.gd"
+
+[node name="Interactable" type="Area3D"]
+collision_layer = 4
+collision_mask = 4
+monitoring = false
+script = SubResource("Resource_rmm16")

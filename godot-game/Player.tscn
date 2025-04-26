@@ -1,0 +1,319 @@
+[gd_scene load_steps=34 format=3 uid="uid://bgb1sd0iibt3q"]
+
+[ext_resource type="Script" uid="uid://5jxp1wp8faph" path="res://player.gd" id="1_hp3yl"]
+[ext_resource type="Script" uid="uid://byxvc1g7acmdo" path="res://hurtbox.gd" id="2_or11t"]
+[ext_resource type="Shader" uid="uid://cidqju2e14waj" path="res://Shaders/stylized_fire.gdshader" id="3_hp6x6"]
+[ext_resource type="Texture2D" uid="uid://bcuugwgdk4uao" path="res://body.png" id="3_xitlb"]
+[ext_resource type="Texture2D" uid="uid://flldwuhtdvhp" path="res://Demo/StylizedFire/HoleNoise.png" id="4_3tkgg"]
+[ext_resource type="Script" uid="uid://cw32qglyuy0eu" path="res://hitbox.gd" id="4_brxwn"]
+[ext_resource type="Material" uid="uid://bwto0ydlotx4p" path="res://debug_hitbox.tres" id="4_tahq6"]
+[ext_resource type="Texture2D" uid="uid://bko6oayqcslrd" path="res://Demo/StylizedFire/FireMask.png" id="5_l6ohk"]
+[ext_resource type="Texture2D" uid="uid://xl22pmkk0nsk" path="res://Demo/StylizedFire/BlueFireGradient.tres" id="6_oudfo"]
+[ext_resource type="PackedScene" uid="uid://cxp17nt7t1ra6" path="res://Models/Lala.glb" id="6_tdg3f"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gkbct"]
+radius = 0.3
+height = 1.60096
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_gqemk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d6rpx"]
+render_priority = 0
+shader = ExtResource("3_hp6x6")
+shader_parameter/noise_texture = ExtResource("4_3tkgg")
+shader_parameter/texture_mask = ExtResource("5_l6ohk")
+shader_parameter/emission_intensity = 2.0
+shader_parameter/time_scale = 3.0
+shader_parameter/texture_scale = Vector2(1, 1)
+shader_parameter/edge_softness = 0.1
+
+[sub_resource type="Curve" id="Curve_r3kul"]
+_data = [Vector2(0, 0), 0.0, 3.65289, 0, 0, Vector2(0.556561, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="5"]
+width = 128
+curve = SubResource("Curve_r3kul")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jatw7"]
+lifetime_randomness = 0.81
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 0.5
+initial_velocity_max = 0.5
+gravity = Vector3(0, 0, 0)
+linear_accel_min = 4.0
+linear_accel_max = 4.0
+scale_max = 2.0
+scale_curve = SubResource("5")
+color_ramp = ExtResource("6_oudfo")
+
+[sub_resource type="QuadMesh" id="QuadMesh_rv870"]
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7hdv6"]
+radius = 0.349718
+height = 1.57689
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8qfbf"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vsd2n"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3i50g"]
+animation = &"Walking"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q3ejp"]
+animation = &"Running"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_46ms1"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_8qfbf")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_vsd2n")
+blend_point_1/pos = 0.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_3i50g")
+blend_point_2/pos = 1.0
+blend_point_3/node = SubResource("AnimationNodeAnimation_q3ejp")
+blend_point_3/pos = 2.0
+min_space = 0.0
+max_space = 2.0
+
+[sub_resource type="Animation" id="Animation_n1dov"]
+resource_name = "RESET"
+
+[sub_resource type="Animation" id="Animation_ty46e"]
+resource_name = "Running"
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_pof7b"]
+resource_name = "Walking"
+length = 1.5
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_wdd5h"]
+resource_name = "idle"
+length = 0.927
+loop_mode = 1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bse85"]
+_data = {
+&"RESET": SubResource("Animation_n1dov"),
+&"Running": SubResource("Animation_ty46e"),
+&"Walking": SubResource("Animation_pof7b"),
+&"idle": SubResource("Animation_wdd5h")
+}
+
+[sub_resource type="Animation" id="Animation_217by"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Path3D/PathFollow3D/Hitbox/BatHitbox:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Path3D/PathFollow3D/Hitbox/DebugVisual:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_j65hk"]
+resource_name = "SwingBat"
+length = 0.12
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Path3D/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.12),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Path3D/PathFollow3D/Hitbox/BatHitbox:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.12),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Path3D/PathFollow3D/Hitbox/DebugVisual:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.12),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qhyab"]
+_data = {
+&"RESET": SubResource("Animation_217by"),
+&"SwingBat": SubResource("Animation_j65hk")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_3uc2g"]
+_data = {
+"points": PackedVector3Array(-0.361653, 0, 0.314563, 0.35, 2.08165e-12, -0.35, -0.5, 2.08165e-12, -0.45, -0.35, 2.08165e-12, -0.35, 0.329632, 0, 0.331515, 0.5, 2.08165e-12, -0.45),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cqfh0"]
+size = Vector3(0.575, 0.775, 0.14)
+
+[node name="Player" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+collision_layer = 3
+collision_mask = 3
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+script = ExtResource("1_hp3yl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 1.12238e-23, 0, 1.12238e-23, 1, 0, 0.795731, 0)
+shape = SubResource("CapsuleShape3D_gkbct")
+
+[node name="Interactor" type="Area3D" parent="CollisionShape3D"]
+unique_name_in_owner = true
+transform = Transform3D(-1, -1.28327e-22, -8.74228e-08, -1.32349e-22, 1, 1.43573e-22, 8.74228e-08, 1.74065e-22, -1, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+collision_layer = 32
+collision_mask = 32
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CollisionShape3D/Interactor"]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 0, 0, 0)
+shape = SubResource("SeparationRayShape3D_gqemk")
+
+[node name="BodyModel" parent="." instance=ExtResource("6_tdg3f")]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="SoulModel" type="Node3D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="BlueFire" type="GPUParticles3D" parent="SoulModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.635989, 0)
+material_override = SubResource("ShaderMaterial_d6rpx")
+cast_shadow = 0
+amount = 50
+randomness = 0.74
+draw_order = 1
+process_material = SubResource("ParticleProcessMaterial_jatw7")
+draw_pass_1 = SubResource("QuadMesh_rv870")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SoulModel/BlueFire"]
+light_color = Color(0.560784, 0.752941, 1, 1)
+
+[node name="Hurtbox" type="Area3D" parent="." groups=["Player"]]
+unique_name_in_owner = true
+collision_layer = 8
+collision_mask = 16
+monitorable = false
+script = ExtResource("2_or11t")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.779316, 0)
+shape = SubResource("CapsuleShape3D_7hdv6")
+
+[node name="BodyMarker" type="Sprite3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(-8.74228e-08, -2, -8.74228e-08, 0, -8.74228e-08, 2, -2, 8.74228e-08, 3.82137e-15, 2.08165e-12, 0.03, 2.08165e-12)
+top_level = true
+visible = false
+modulate = Color(1, 0.513726, 0.321569, 1)
+texture_filter = 0
+texture = ExtResource("3_xitlb")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+unique_name_in_owner = true
+root_node = NodePath("%AnimationTree/..")
+tree_root = SubResource("AnimationNodeBlendSpace1D_46ms1")
+anim_player = NodePath("../AnimationPlayer")
+parameters/blend_position = 2.08165e-12
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_bse85")
+}
+
+[node name="SwingAnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_qhyab")
+}
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.839481, 2.08165e-12)
+curve = SubResource("Curve3D_3uc2g")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(0.707094, -2.97379e-12, -0.707094, 0, 1, -4.20549e-12, 0.707094, 2.97379e-12, 0.707094, -0.5, 2.08165e-12, -0.45)
+
+[node name="Hitbox" type="Area3D" parent="Path3D/PathFollow3D" groups=["Player"]]
+unique_name_in_owner = true
+transform = Transform3D(1, 2.43062e-22, 1.25373e-08, -3.13022e-20, 1, 2.64716e-19, 1.25402e-08, 7.9421e-20, 1, 0, 0, 0)
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_brxwn")
+
+[node name="BatHitbox" type="CollisionShape3D" parent="Path3D/PathFollow3D/Hitbox"]
+transform = Transform3D(1, 9.35947e-20, 2.50316e-08, -3.16011e-17, 1, -5.08135e-20, 2.50316e-08, -1.48255e-20, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_cqfh0")
+disabled = true
+
+[node name="DebugVisual" type="CSGBox3D" parent="Path3D/PathFollow3D/Hitbox"]
+visible = false
+size = Vector3(0.575, 0.775, 0.14)
+material = ExtResource("4_tahq6")
+
+[node name="InteractionRaycast" type="RayCast3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.746804, 0)
+collision_mask = 32
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+
+[connection signal="area_entered" from="Path3D/PathFollow3D/Hitbox" to="." method="_on_hitbox_hit2"]
+[connection signal="body_entered" from="Path3D/PathFollow3D/Hitbox" to="." method="_on_hitbox_hit"]
